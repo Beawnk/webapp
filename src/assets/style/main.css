@@ -1,0 +1,58 @@
+@font-face { font-family:'Poppins-Regular'; src: url('@/assets/fonts/Poppins-Regular.ttf'); }
+@font-face { font-family:'Poppins-Light'; src: url('@/assets/fonts/Poppins-Light.ttf'); }
+@font-face { font-family:'Poppins-Bold'; src: url('@/assets/fonts/Poppins-Bold.ttf'); }
+@font-face { font-family:'Poppins-SemiBold'; src: url('@/assets/fonts/Poppins-SemiBold.ttf'); }
+
+:root {
+        /* colors  */
+    --primary-gradient-color: linear-gradient(180deg, #9e61e1 10%, #8286cc 90%);
+    --emergency-gradient-color: linear-gradient(180deg, #ed3b4b 10%, #6a3b84 90%);
+    --report-gradient-color: linear-gradient(180deg, #53b4e8 10%, #4ac4ee 90%);
+    --primary-color: #6200ee;
+    /* --secondary-color: #f5b4b0; */
+    --background-color: #f3f3f3;
+    --text-color: #FFF;
+    --text-secondary-color: #23036A;
+    --hover-color: #F2E7FE;
+    /* --success-color: #2ce27e;
+    --info-color: #667dff;
+    --warning-color: #FAC975; */
+    --error-color: #fd003a;
+    --emergency-color: #EF3B49;
+    --bg-emergency-color: #ecd6da;
+    --report-color: #4CBFEC;
+    --btn-report-color: #2f8cbc;
+    --light-color: #FAF9F5;
+    --white-color: #ffffff;
+    --shadow-color: #66666636;
+    --dark-color: #434343;
+    --gray-color: #00000044;
+
+    --shadow: 0px 2px 10px 0px var(--shadow-color);
+
+    /* Fonts  */
+    --font-family: 'Poppins-Regular', sans-serif;
+    --font-family-light: 'Poppins-Light', sans-serif;
+    --font-family-bold: 'Poppins-Bold', sans-serif;
+    --font-family-semibold: 'Poppins-SemiBold', sans-serif;
+
+    /* font sizes */
+    --title-super: 38px;
+    --title-big: 33px;
+    --title-medium: 28px;
+    --title-small: 24px;
+  
+    --subtitle-big: 19px;
+    --subtitle-medium: 17px;
+    --subtitle-small: 14px;
+  
+    --text-big: 12px;
+    --text-medium: 11px;
+    --text-small: 10px;
+
+    --section: 55px;
+    --side: 30px;
+
+    --transition: all 0.3s;
+    --border-radius: 5px;
+}
