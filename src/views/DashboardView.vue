@@ -12,45 +12,13 @@
         </div>
     </div>
     <div class="content">
-        <div class="search">
-            <input type="text" placeholder="Pesquisar por tipo de denúncia...">
-        </div>
+        <ReportTypeSearch @emit-search="val => searchQuery = val" />
         <div class="cards">
-            <div class="card">
-                <div class="icon">
-                    <img src="@/assets/images/icons/danger.png" alt="">
-                </div>
-                <p>Incêndio</p>
-            </div>
-            <div class="card">
-                <div class="icon">
-                    <img src="@/assets/images/icons/femenine.png" alt="">
-                </div>
-                <p>Violência doméstica</p>
-            </div>
-            <div class="card">
-                <div class="icon">
-                    <img src="@/assets/images/icons/robber.png" alt="">
-                </div>
-                <p>Assalto</p>
-            </div>
-            <div class="card">
-                <div class="icon">
-                    <img src="@/assets/images/icons/accident.png" alt="">
-                </div>
-                <p>Acidente de trânsito</p>
-            </div>
-                        <div class="card">
-                <div class="icon">
-                    <img src="@/assets/images/icons/disaster.png" alt="">
-                </div>
-                <p>Árvore caída</p>
-            </div>
-                        <div class="card">
-                <div class="icon">
-                    <img src="@/assets/images/icons/pawprint.png" alt="">
-                </div>
-                <p>Animal perdido</p>
+            <div class="card" v-for="(item, idx) in filteredItems" :key="idx">
+              <div class="icon">
+                <img :src="item.icon" alt="">
+              </div>
+              <p>{{ item.label }}</p>
             </div>
         </div>
     </div>
@@ -58,7 +26,53 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
+import ReportTypeSearch from '@/components/ReportTypeSearch.vue';
 
+import dangerIcon from '@/assets/images/icons/danger.png'
+import femenineIcon from '@/assets/images/icons/femenine.png'
+import robberIcon from '@/assets/images/icons/robber.png'
+import accidentIcon from '@/assets/images/icons/accident.png'
+import disasterIcon from '@/assets/images/icons/disaster.png'
+import pawprintIcon from '@/assets/images/icons/pawprint.png'
+
+const searchQuery = ref('')
+
+const reportItems = [
+  { icon: dangerIcon, label: 'Incêndio' },
+  { icon: femenineIcon, label: 'Violência doméstica' },
+  { icon: robberIcon, label: 'Assalto' },
+  { icon: accidentIcon, label: 'Acidente de trânsito' },
+  { icon: disasterIcon, label: 'Árvore caída' },
+  { icon: pawprintIcon, label: 'Animal perdido' }
+]
+
+const cleanSearch = (str) =>
+  str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+
+
+const filteredItems = computed(() => {
+  if (!searchQuery.value) return reportItems
+  const cleanedQuery = cleanSearch(searchQuery.value)
+  console.log('Search query:', cleanedQuery)
+    console.log('Report items:', reportItems)
+  return reportItems.filter(item =>
+    cleanSearch(item.label).includes(cleanedQuery)
+  )
+})
+
+// const onSearch = (searchQuery) => {
+//   const cleanedQuery = cleanSearch(searchQuery || '');
+//   if (cleanedQuery) {
+//     reportNames.value = reportItems
+//       .filter(item => cleanSearch(item.label).includes(cleanedQuery))
+//       .map(item => item.label);
+
+//     console.log('Filtered report names:', reportNames.value);
+//   } else {
+//     reportNames.value = [];
+//   }
+// }
 </script>
 
 <style lang="scss" scoped>
@@ -105,35 +119,6 @@
     }
     .content {
         padding: var(--side);
-
-        .search {
-            margin-bottom: 30px;
-            position: relative;
-            width: 100%;
-            
-            input {
-                width: 100%;
-                padding: 10px;
-                border-radius: 30px;
-                border: 1px solid var(--border-color);
-                background-color: var(--white-color);
-                font-size: var(--text-big);
-                color: var(--gray-color);
-            }
-
-            &::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                right: 10px;
-                transform: translateY(-50%);
-                width: 20px;
-                height: 20px;
-                background-image: url('@/assets/images/icons/lupa.png');
-                background-size: 20px;
-                opacity: 0.5;
-            }
-        }
 
         .cards {
             display: grid;
