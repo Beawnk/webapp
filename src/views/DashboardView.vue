@@ -60,19 +60,6 @@ const filteredItems = computed(() => {
     cleanSearch(item.label).includes(cleanedQuery)
   )
 })
-
-// const onSearch = (searchQuery) => {
-//   const cleanedQuery = cleanSearch(searchQuery || '');
-//   if (cleanedQuery) {
-//     reportNames.value = reportItems
-//       .filter(item => cleanSearch(item.label).includes(cleanedQuery))
-//       .map(item => item.label);
-
-//     console.log('Filtered report names:', reportNames.value);
-//   } else {
-//     reportNames.value = [];
-//   }
-// }
 </script>
 
 <style lang="scss" scoped>
