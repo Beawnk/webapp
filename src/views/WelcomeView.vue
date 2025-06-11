@@ -3,7 +3,7 @@
     <div class="gradient"></div>
     <div class="wrapper">
       <div class="logo-img">
-          <img src="@/assets/images/logo.png" alt="Logo">
+          <img :src="logo" alt="Logo">
           <h1 class="title">IEmergency</h1>
       </div>
       <div class="welcome-text">
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-
+import logo from '@/assets/images/logo.png'
 </script>
 
 <style lang="scss" scoped>
