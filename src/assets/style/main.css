@@ -1,5 +1,5 @@
 @font-face { font-family:'Poppins-Regular'; src: url('@/assets/fonts/Poppins-Regular.ttf'); }
-@font-face { font-family:'Poppins-Light'; src: url('@/assets/fonts/Poppins-Light.ttf'); }
+@font-face { font-family:'Poppins-Light'; src: url('@/assets/fonts/Poppins-ExtraLight.ttf'); }
 @font-face { font-family:'Poppins-Bold'; src: url('@/assets/fonts/Poppins-Bold.ttf'); }
 @font-face { font-family:'Poppins-SemiBold'; src: url('@/assets/fonts/Poppins-SemiBold.ttf'); }
 
@@ -55,4 +55,117 @@
 
     --transition: all 0.3s;
     --border-radius: 5px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    height: 100%;
+    min-height: 100vh;
+    font-family: var(--font-family);
+}
+
+body:has(.loader),
+body:has(.modal.open) {
+    overflow: hidden;
+}
+
+/* Typography */
+h1, h2, h3 {
+    font-family: var(--font-family-semiBold);
+    margin: 0;
+    font-weight: normal;
+}
+
+h4, h5, h6 {
+    font-family: var(--font-family);
+    margin: 0;
+    font-weight: normal;
+}
+
+h1 {
+    font-size: var(--title-big);
+}
+
+h2 {
+    font-size: var(--title-medium);
+}
+
+h3 {
+    font-size: var(--title-small);
+}
+
+h4 {
+    font-size: var(--subtitle-big);
+}
+
+h5 {
+    font-size: var(--subtitle-medium);
+}
+
+h6 {
+    font-size: var(--subtitle-small);
+}
+
+label {
+    font-family: var(--font-family);
+}
+
+a, p {
+    font-family: var(--font-family);
+}
+
+p {
+    font-size: var(--text-medium);
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+strong {
+    font-family: var(--font-family-semiBold);
+    font-weight: normal;
+}
+
+span {
+    font-size: var(--text-small);
+    font-family: var(--font-family);
+}
+
+ul { 
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style: none;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: 0;
+    transition: var(--transition);
+    font-family: var(--font-family);
+}
+
+#app {
+    max-width: 500px;
+    background-color: var(--background-color);
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
 }
