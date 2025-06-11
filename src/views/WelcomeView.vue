@@ -12,7 +12,7 @@
     </div>
     <div class="buttons">
         <button class="btn secondary" @click="$router.push('/login')">Entrar</button>
-        <button class="btn primary" @click="$router.push('/register')">Cadastre-se</button>\
+        <button class="btn primary" @click="$router.push('/register')">Cadastre-se</button>
         <a href="" class="link">Esqueceu a senha?</a>
     </div>
   </section>
