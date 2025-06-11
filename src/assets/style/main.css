@@ -24,11 +24,14 @@
     --btn-report-color: #2f8cbc;
     --light-color: #FAF9F5;
     --white-color: #ffffff;
+    --input-color: #ececec;
+    --border-color: #e0e0e0;
+    --border-color-focus: #6300ee91;
     --shadow-color: #66666636;
     --dark-color: #434343;
-    --gray-color: #00000044;
+    --gray-color: #00000071;
 
-    --shadow: 0px 2px 10px 0px var(--shadow-color);
+    --shadow: 0px 0px 14px 0px var(--shadow-color);
 
     /* Fonts  */
     --font-family: 'Poppins-Regular', sans-serif;

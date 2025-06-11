@@ -1,13 +1,14 @@
 <template>
   <section class="welcome">
-    <div class="gradient">
-        <div class="logo-img">
-            <img src="@/assets/images/logo.png" alt="Logo">
-            <h1 class="title">IEmergency</h1>
-        </div>
-        <div class="welcome-text">
-            <h2>Bem-vindo</h2>
-        </div>
+    <div class="gradient"></div>
+    <div class="wrapper">
+      <div class="logo-img">
+          <img src="@/assets/images/logo.png" alt="Logo">
+          <h1 class="title">IEmergency</h1>
+      </div>
+      <div class="welcome-text">
+          <h2>Bem-vindo</h2>
+      </div>
     </div>
     <div class="buttons">
         <button class="btn secondary" @click="$router.push('/login')">Entrar</button>
@@ -23,22 +24,28 @@
 
 <style lang="scss" scoped>
 .welcome {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, 0%);
-  width: 700px;
-
+  
   .gradient {
     background: var(--primary-gradient-color);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    width: 700px;
+    height: 60vh;
+    border-radius: 0% 0 25% 25%;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
     padding: 50px 70px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
     height: 60vh;
-    border-radius: 0% 0 25% 25%;
-
+    
     .logo-img {
       display: flex;
       flex-direction: column;
@@ -77,7 +84,10 @@
     padding: 70px 50px;
 
     .btn {
-      width: 50%;
+      width: 100%;
+      max-width: 300px;
+      padding: 15px 50px;
+      font-size: var(--title-small);
 
       &:first-child {
         margin-bottom: 25px;
