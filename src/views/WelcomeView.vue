@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import logo from '@/assets/images/logo.png'
+import logo from '@/assets/images/logo2.png'
 </script>
 
 <style lang="scss" scoped>
