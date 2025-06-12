@@ -15,6 +15,7 @@ const searchQuery = ref('');
 
 const clearSearch = () => {
     searchQuery.value = '';
+    emit('emitSearch', searchQuery.value)
 }
 
 const searchReportType = () => {

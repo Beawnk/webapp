@@ -8,7 +8,10 @@
         <div class="info">
             <h2>Olá, ####!</h2>
             <p>O que você quer denunciar?</p>
-            <p class="warning-info">Em caso de emergência, clique no botão vermelho acima.</p>
+            <div class="warning">
+              <p class="warning-info">Em caso de emergência, aperte no botão vermelho.</p>
+              <button class="warning-btn"></button>
+            </div>
         </div>
     </div>
     <div class="content">
@@ -20,6 +23,9 @@
               </div>
               <p>{{ item.label }}</p>
             </div>
+        </div>
+        <div class="info">
+          <p>Escolhendo uma categoria sua denúncia poderá ser rapidamente identificada e encaminhada à autoritade responsável.</p>
         </div>
     </div>
   </section>
@@ -74,6 +80,7 @@ const filteredItems = computed(() => {
         width: 700px;
         height: 40vh;
         border-radius: 0% 0 25% 25%;
+        box-shadow: 0px 0px 14px 7px var(--shadow-color);
     }
 
     .header {
@@ -97,11 +104,29 @@ const filteredItems = computed(() => {
             color: var(--text-color);
             font-size: var(--subtitle-big);
         }
+        .warning {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: absolute;
+          bottom: 40px;
+          margin-right: 30px;
 
-        .warning-info {
+          .warning-info {
             font-size: var(--subtitle-small);
-            position: absolute;
-            bottom: 40px;
+            display: block;
+            margin-right: 10px;
+            max-width: 80%;
+          }
+
+          button {
+            background-image: url('@/assets/images/icons/warning.png');
+            background-size: cover;
+            background-position: center;
+            width: 40px;
+            height: 40px;
+            display: block;
+          }
         }
     }
     .content {
@@ -138,6 +163,14 @@ const filteredItems = computed(() => {
                     color: var(--grey-color);
                     opacity: 0.5;
                 }
+            }
+        }
+
+        .info {
+            margin-top: 30px;
+            p {
+                font-size: var(--text-big);
+                color: var(--gray-color);
             }
         }
     }
