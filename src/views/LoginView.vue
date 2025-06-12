@@ -2,9 +2,6 @@
   <section class="login">
     <div class="gradient"></div>
     <div class="header">
-      <div class="back-btn">
-        <button class="" @click="$router.push('/')">Voltar</button>
-      </div>
       <h2>Entrar</h2>
     </div>
     <div class="form-login">
@@ -18,6 +15,7 @@
           <input type="password" id="password" placeholder="Digite sua senha" required>
         </div>
         <div class="btn-flex">
+          <button class="btn secondary back-btn" @click="$router.push('/')">Voltar</button>
           <button type="submit" class="btn primary" @click="$router.push('/dashboard')">Entrar</button>
         </div>
       </form>
@@ -31,7 +29,6 @@
 
 <style lang="scss" scoped>
 .login {
-
   .gradient {
     background: var(--primary-gradient-color);
     position: absolute;
@@ -39,40 +36,23 @@
     left: 50%;
     transform: translate(-50%, 0%);
     width: 600px;
-    height: 20vh;
+    height: 15vh;
     border-radius: 0% 0 140px 140px;
   }
 
   .header {
-    padding: 70px var(--side);   
+    padding: 50px var(--side);   
     padding-bottom: 0;  
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    height: 20vh;
+    height: 15vh;
     z-index: 1;
     position: relative;
     justify-content: center;
 
     h2 {
       color: var(--text-color);
-    }
-
-    .back-btn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-
-      button {
-        background-image: url('@/assets/images/icons/back-icon.png');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: left center;
-        background-size: 12px;
-        padding-left: 20px;
-        color: var(--text-color);
-        font-size: var(--subtitle-medium);
-      }
     }
   }
 
@@ -84,7 +64,6 @@
     justify-content: center;
     height: 60vh;
     z-index: 1;
-    position: relative;
 
     form {
       width: 100%;
@@ -92,7 +71,7 @@
 
       .btn-flex {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
       }
     }
   }

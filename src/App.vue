@@ -13,9 +13,10 @@
 
 .btn {
     border-radius: 40px;
-    padding: 15px 30px;
-    font-size: var(--subtitle-big);
-    border: 3px solid var(--primary-color);
+    padding: 5px 15px;
+    min-width: 130px;
+    font-size: var(--subtitle-medium);
+    border: 2px solid var(--primary-color);
 
     &.primary {
         background-color: var(--primary-color);
@@ -26,6 +27,13 @@
     &.secondary {
         background-color: transparent;
         color: var(--primary-color);
+    }
+
+    &.back-btn {
+        background-image: url('@/assets/images/icons/back-icon-purple.png');
+        background-size: 10px;
+        background-position: 10px center;
+        background-repeat: no-repeat;
     }
 
     &:hover {

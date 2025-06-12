@@ -2,9 +2,6 @@
     <section class="register">
         <div class="gradient"></div>
         <div class="header">
-          <div class="back-btn">
-            <button class="" @click="$router.push('/')">Voltar</button>
-          </div>
           <h2>Cadastro</h2>
         </div>
         <div class="form-register">
@@ -45,6 +42,7 @@
                 <input type="text" id="zip" placeholder="Digite seu CEP" required>
             </div>
             <div class="btn-flex">
+              <button class="btn secondary back-btn" @click="$router.push('/')">Voltar</button>
               <button type="submit" class="btn primary" @click="$router.push('/dashboard')">Cadastrar</button>
             </div>
           </form>
@@ -84,23 +82,6 @@
     h2 {
       color: var(--text-color);
     }
-
-    .back-btn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-
-      button {
-        background-image: url('@/assets/images/icons/back-icon.png');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: left center;
-        background-size: 12px;
-        padding-left: 20px;
-        color: var(--text-color);
-        font-size: var(--subtitle-medium);
-      }
-    }
   }
 
   .form-register {
@@ -113,15 +94,19 @@
         position: relative;
         form {
           width: 100%;
-            .btn-flex {
-              display: flex;
-              justify-content: center;
-            }
-            h3 {
-                color: var(--text-secondary-color);
-                font-size: var(--subtitle-medium);
-                margin: 20px 0;
-            }
+          .btn-flex {
+            display: flex;
+            justify-content: center;
+          }
+          h3 {
+              color: var(--text-secondary-color);
+              font-size: var(--subtitle-medium);
+              margin: 20px 0;
+          }
+          .btn-flex {
+            display: flex;
+            justify-content: space-between;
+          }
         }
     }
 }
