@@ -77,7 +77,7 @@ input, textarea {
 }
 
 input::placeholder {
-  opacity: 0.4;
+  opacity: 0.8;
 }
 
 label {

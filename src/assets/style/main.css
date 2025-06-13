@@ -25,11 +25,11 @@
     --light-color: #FAF9F5;
     --white-color: #ffffff;
     --input-color: #ececec;
-    --border-color: #e0e0e0;
+    --border-color: #c7c7c7;
     --border-color-focus: #6300ee91;
     --shadow-color: #66666636;
     --dark-color: #434343;
-    --gray-color: #00000071;
+    --gray-color: #0000009f;
 
     --shadow: 0px 0px 14px 0px var(--shadow-color);
 
