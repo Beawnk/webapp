@@ -2,7 +2,8 @@
     <section class="register">
         <div class="gradient"></div>
         <div class="header">
-          <h2>Cadastro</h2>
+          <h2 v-if="userStore.page === 'register' || userStore.logged === false">Cadastro</h2>
+          <h2 v-else>Seus dados</h2>
         </div>
         <div class="form-register">
           <form>
@@ -14,13 +15,17 @@
               <label for="email">Email</label>
               <input type="email" id="email" placeholder="Digite seu email" v-model="email" required>
             </div>
-            <div class="input-group">
+            <div class="input-group" v-if="userStore.page === 'register' || userStore.logged === false">
               <label for="password">Senha</label>
               <input type="password" id="password" placeholder="Digite sua senha" v-model="password"  required>
             </div>
-            <div class="">
+            <div class="input-group">
               <label for="birthdate">Data de nascimento</label>
-              <input type="date" id="birthdate" placeholder="Digite sua senha" v-model="birthdate"  required>
+              <input type="date" id="birthdate" placeholder="Digite sua senha" v-model="birthdate" required :disabled="userStore.page !== 'register' && userStore.logged === true">
+            </div>
+            <div class="input-group">
+              <label for="phone">Telefone</label>
+              <input type="text" id="phone" placeholder="Digite seu telefone" v-model="phone">
             </div>
             <h3>Endereço</h3>
             <div class="input-group">
@@ -51,7 +56,8 @@
             </div>
             <div class="btn-flex">
               <button class="btn secondary back-btn" @click="$router.push('/')">Voltar</button>
-              <button type="submit" class="btn primary" @click.prevent="updateUserStore">Cadastrar</button>
+              <button type="submit" class="btn primary" @click.prevent="updateUserStore" @keyup.enter.prevent="updateUserStore" v-if="userStore.page === 'register' || userStore.logged === false">Cadastrar</button>
+              <button type="submit" class="btn primary" @click.prevent="updateUserStore" @keyup.enter.prevent="updateUserStore" v-else>Atualizar</button>
             </div>
           </form>
         </div>
@@ -69,25 +75,13 @@ const email = ref('');
 const password = ref('');
 const name = ref('');
 const birthdate = ref('');
+const phone = ref('');
 const zip_code = ref('');
 const street = ref('');
 const number = ref('');
 const district = ref('');
 const city = ref('');
 const state = ref('');
-
-// onMounted(() => {
-//   email.value = userStore.user.email;
-//   name.value = userStore.user.name;
-//   profilePicUrl.value = userStore.user.avatar;
-//   cep.value = userStore.user.address_cep;
-//   street.value = userStore.user.address_street;
-//   number.value = userStore.user.address_number;
-//   district.value = userStore.user.address_district;
-//   city.value = userStore.user.address_city;
-//   state.value = userStore.user.address_state;
-//   country.value = userStore.user.address_country;
-// });
 
 const fillCep = async () => {
   const cepValue = zip_code.value.replace(/\D/g, '');
@@ -100,11 +94,12 @@ const fillCep = async () => {
   }
 };
 
-const updateUserStore = () => {
+const updateUserStore = async () => {
   try {
     userStore.user.Name = name.value;
     userStore.user.Email = email.value;
     userStore.user.Birthdate = birthdate.value;
+    userStore.user.Phone = phone.value;
     userStore.user.Zip_code = zip_code.value;
     userStore.user.Street = street.value;
     userStore.user.Number = number.value;
@@ -112,11 +107,42 @@ const updateUserStore = () => {
     userStore.user.City = city.value;
     userStore.user.State = state.value;
 
-    userStore.register(email.value, password.value);
+    if (userStore.page === 'register' || userStore.logged === false) {
+      await userStore.register(email.value, password.value);
+    } else {
+      await userStore.updateUser();
+    }
+    
   } catch (error) {
     console.error('Error updating user store:', error);
   }
 }
+
+onMounted(() => {
+  if (userStore.page === 'register' || userStore.logged === false) {
+    name.value = '';
+    email.value = '';
+    birthdate.value = '';
+    phone.value = '';
+    zip_code.value = '';
+    street.value = '';
+    number.value = '';
+    district.value = '';
+    city.value = '';
+    state.value = '';
+  } else {
+    name.value = userStore.user.Name;
+    email.value = userStore.user.Email;
+    birthdate.value = userStore.user.Birthdate;
+    phone.value = userStore.user.Phone;
+    zip_code.value = userStore.user.Zip_code;
+    street.value = userStore.user.Street;
+    number.value = userStore.user.Number;
+    district.value = userStore.user.District;
+    city.value = userStore.user.City;
+    state.value = userStore.user.State;
+  }
+});
   
 
 </script>
@@ -170,6 +196,12 @@ const updateUserStore = () => {
               font-size: var(--subtitle-medium);
               margin: 20px 0;
           }
+
+          input:disabled {
+            pointer-events: none;
+            opacity: 0.5;
+          }
+
           .street {
             width: 80%;
           }

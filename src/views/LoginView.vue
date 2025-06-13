@@ -8,15 +8,15 @@
       <form>
         <div class="input-group">
           <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Digite seu email" required>
+          <input type="email" id="email" placeholder="Digite seu email" v-model="email" required>
         </div>
         <div class="input-group">
           <label for="password">Senha</label>
-          <input type="password" id="password" placeholder="Digite sua senha" required>
+          <input type="password" id="password" placeholder="Digite sua senha" v-model="password" required>
         </div>
         <div class="btn-flex">
           <button class="btn secondary back-btn" @click="$router.push('/')">Voltar</button>
-          <button type="submit" class="btn primary" @click="$router.push('/dashboard')">Entrar</button>
+          <button type="submit" class="btn primary" @click.prevent="login">Entrar</button>
         </div>
       </form>
     </div>
@@ -24,7 +24,21 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useUserStore } from '@/stores/UserStore';
 
+const userStore = useUserStore();
+
+const email = ref('');
+const password = ref('');
+
+const login = () => {
+  if (email.value && password.value) {
+    userStore.login(email.value, password.value);
+  } else {
+    alert('Por favor, preencha todos os campos.');
+  }
+}
 </script>
 
 <style lang="scss" scoped>

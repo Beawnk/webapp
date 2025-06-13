@@ -12,14 +12,25 @@
     </div>
     <div class="buttons">
         <button class="btn secondary" @click="$router.push('/login')">Entrar</button>
-        <button class="btn primary" @click="$router.push('/register')">Cadastre-se</button>
+        <button class="btn primary" @click="openRegister">Cadastre-se</button>
         <a href="" class="link">Esqueceu a senha?</a>
     </div>
   </section>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { useUserStore } from '@/stores/UserStore'
+import { useRouter } from 'vue-router';
 import logo from '@/assets/images/logo2.png'
+
+const userStore = useUserStore()
+const router = useRouter()
+
+const openRegister = () => {
+  router.push('/user-data')
+  userStore.page = 'register'
+}
 </script>
 
 <style lang="scss" scoped>

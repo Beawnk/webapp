@@ -14,6 +14,7 @@ export const useUserStore = defineStore('user', () => {
         Name: '',
         Email: '',
         Birthdate: '',
+        Phone: '',
         Zip_code: '',
         Street: '',
         Number: '',
@@ -21,6 +22,8 @@ export const useUserStore = defineStore('user', () => {
         City: '',
         State: '',
   	});
+
+    const page = ref('');
 
 
   	const loadUserFromLocalStorage = () => {
@@ -70,14 +73,16 @@ export const useUserStore = defineStore('user', () => {
 
                 Object.assign(user, {
                     id: customUser.id,
-                    name: customUser.Name,
-                    email: customUser.Email,
-                    street: customUser.Street || '',
-                    number: customUser.Number || '',
-                    district: customUser.District || '',
-                    city: customUser.City || '',
-                    state: customUser.State || '',
-                    zip_code: customUser.Zip_code || ''
+                    Name: customUser.Name,
+                    Email: customUser.Email,
+                    Birthdate: customUser.Birthdate || '',
+                    Phone: customUser.Phone || '',
+                    Street: customUser.Street || '',
+                    Number: customUser.Number || '',
+                    District: customUser.District || '',
+                    City: customUser.City || '',
+                    State: customUser.State || '',
+                    Zip_code: customUser.Zip_code || ''
                 });
                 logged.value = true;
                 saveUserToLocalStorage();
@@ -85,7 +90,6 @@ export const useUserStore = defineStore('user', () => {
                 router.push({ name: 'dashboard' });
             }
         } catch (error) {
-            console.error('Login falhou:', error);
             throw error;
         }
     }
@@ -95,8 +99,6 @@ export const useUserStore = defineStore('user', () => {
             if (!email || !password) {
                 throw new Error('Erro de validação. Verifique os campos e tente novamente.');
             }
-
-            console.log(email.value, password.value);
 
             const { data, error } = await supabase.auth.signUp({
                 email,
@@ -112,6 +114,7 @@ export const useUserStore = defineStore('user', () => {
                 const userData = {
                     Name: user.Name,
                     Birthdate: user.Birthdate,
+                    Phone: user.Phone,
                     Zip_code: user.Zip_code,
                     Street : user.Street,
                     Number : user.Number,
@@ -121,8 +124,6 @@ export const useUserStore = defineStore('user', () => {
                     id: data.user.id,
                     Email: data.user.email,
                 };
-
-                console.log(userData);
 
                 const { error: insertError } = await supabase
                     .from('Users')
@@ -140,6 +141,65 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
+    const updateUser = async () => {
+        try {
+            const { error } = await supabase
+                .from('Users')
+                .update({
+                    Name: user.Name,
+                    Phone: user.Phone,
+                    Zip_code: user.Zip_code,
+                    Street: user.Street,
+                    Number: user.Number,
+                    District: user.District,
+                    City: user.City,
+                    State: user.State
+                })
+                .eq('id', user.id);
+
+            if (error) {
+                throw error;
+            }
+
+            window.alert('Dados atualizados com sucesso!');
+
+            saveUserToLocalStorage();
+        } catch (error) {
+            window.alert('Erro ao atualizar os dados. Tente novamente mais tarde.');
+            console.error('Erro ao atualizar usuário:', error);
+            throw error;
+        }
+    }
+
+    const logout = async () => {
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                throw error;
+            }
+            clearLocalStorage();
+            Object.assign(user, {
+                id: '',
+                Name: '',
+                Email: '',
+                Birthdate: '',
+                Phone: '',
+                Zip_code: '',
+                Street: '',
+                Number: '',
+                District: '',
+                City: '',
+                State: ''
+            });
+            logged.value = false;
+            router.push({ name: 'welcome' });
+        } catch (error) {
+            console.error('Erro ao fazer logout:', error);
+        }
+    }
+
+    loadUserFromLocalStorage();
+
     return {
         logged,
         user,
@@ -147,6 +207,8 @@ export const useUserStore = defineStore('user', () => {
         saveUserToLocalStorage,
         clearLocalStorage,
         login,
-        register
+        register,
+        updateUser,
+        logout
     };
 })

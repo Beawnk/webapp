@@ -2,11 +2,9 @@
   <section class="dashboard">
     <div class="gradient"></div>
     <div class="header">
-        <div class="menu-btn">
-            
-        </div>
+        <Menu/>
         <div class="info">
-            <h2>Olá, ####!</h2>
+            <h2>Olá, {{ userFirstName }}!</h2>
             <p>O que você quer denunciar?</p>
             <div class="warning">
               <p class="warning-info">Em caso de emergência, aperte no botão vermelho.</p>
@@ -33,6 +31,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useUserStore } from '@/stores/UserStore';
 import ReportTypeSearch from '@/components/ReportTypeSearch.vue';
 
 import dangerIcon from '@/assets/images/icons/danger.png'
@@ -41,6 +40,8 @@ import robberIcon from '@/assets/images/icons/robber.png'
 import accidentIcon from '@/assets/images/icons/accident.png'
 import disasterIcon from '@/assets/images/icons/disaster.png'
 import pawprintIcon from '@/assets/images/icons/pawprint.png'
+
+const userStore = useUserStore();
 
 const searchQuery = ref('')
 
@@ -52,6 +53,10 @@ const reportItems = [
   { icon: disasterIcon, label: 'Árvore caída' },
   { icon: pawprintIcon, label: 'Animal perdido' }
 ]
+
+const userFirstName = computed(() => {
+    return userStore.user.Name ? userStore.user.Name.split(' ')[0] : 'Usuário';
+});
 
 const cleanSearch = (str) =>
   str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
