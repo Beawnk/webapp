@@ -10,7 +10,7 @@
         <div class="menu" ref="menu">
             <div class="app-name">
                 <div class="app-logo">
-                    <img src="@/assets/images/logo.png" alt="Logo">
+                    <img src="@/assets/images/logo2.png" alt="Logo">
                 </div>
                 <h4>IEmergency</h4>
             </div>
