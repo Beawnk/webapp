@@ -39,13 +39,16 @@
                 </div>
                 <div class="input-group">
                     <label for="local-type">Tipo de local</label>
-                    <select name="local-type" id="local-type">
-                        <option disabled value="">Selecione</option>
-                        <option value="residential">Residencial</option>
-                        <option value="commercial">Comercial</option>
-                        <option value="public">Público</option>
-                        <option value="other">Outro</option>
-                    </select>
+                    <CustomSelect
+                      v-model="localType"
+                      :options="[
+                        { label: 'Residencial', value: 'residential' },
+                        { label: 'Comercial', value: 'commercial' },
+                        { label: 'Público', value: 'public' },
+                        { label: 'Outro', value: 'other' }
+                      ]"
+                      label="Selecione"
+                    />
                 </div>
                 <div class="input-group">
                     <label for="description">Descrição</label>
@@ -94,6 +97,7 @@ import { useGetAddress } from '@/composables/getAddress';
 import { useUserStore } from '@/stores/UserStore';
 import { supabase } from '@/lib/supabaseClient';
 import Menu from '@/components/Menu.vue';
+import CustomSelect from '@/components/CustomSelect.vue'
 
 const props = defineProps(['type'])
 
@@ -109,6 +113,7 @@ const city = ref('');
 const state = ref('');
 const description = ref('');
 const images = ref([]);
+const localType = ref('');
   
 const fillCep = async () => {
   const cepValue = zip_code.value.replace(/\D/g, '');
