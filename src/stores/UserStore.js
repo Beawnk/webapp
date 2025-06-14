@@ -174,7 +174,7 @@ export const useUserStore = defineStore('user', () => {
     const logout = async () => {
         try {
             const { error } = await supabase.auth.signOut();
-            if (error) {
+            if (error && error.name !== 'AuthSessionMissingError') {
                 throw error;
             }
             clearLocalStorage();

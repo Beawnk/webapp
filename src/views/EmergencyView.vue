@@ -12,9 +12,7 @@
             </div>
             <p>Aperte o botão para enviar uma mensagem de emergência</p>
         </div>
-        <div class="emergency-btn">
-            <button class="emergency" @click.prevent="$router.push('/emergency-form')">Chamar Ajuda</button>
-        </div>
+        <EmergencyBtn/>
         <div class="btn-flex">
             <button class="btn secondary back-btn" @click="$router.go(-1)">Voltar</button>
             <button class="btn secondary numbers" @click.prevent="openNumbers = !openNumbers" ref="numbersBtn">Números de emergência</button>
@@ -25,9 +23,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useClickOutside } from '@/composables/clickOutside';
+import { ref } from 'vue';
 import EmergencyNumbers from '@/components/EmergencyNumbers.vue';
+import EmergencyBtn from '@/components/EmergencyBtn.vue';
 
 const openNumbers = ref(false);
 const numbersBtn = ref(null);
@@ -90,32 +88,6 @@ const numbersBtn = ref(null);
                 color: var(--emergency-text-color);
                 font-size: var(--subtitle-small);
                 max-width: 80%;
-            }
-        }
-
-        .emergency-btn {
-            display: flex;
-            justify-content: center;
-            height: 50vh;
-            align-items: center;
-
-            .emergency {
-                background-color: var(--emergency-color);
-                color: var(--white-color);
-                padding: 20px;
-                width: 250px;
-                height: 250px;
-                font-size: var(--title-small);
-                border: 12px dashed #d43636;
-                cursor: pointer;
-                border-radius: 50%;
-                box-shadow: 0px 0px 14px 7px var(--shadow-color);
-                transition: background-color 0.3s;
-                transition: var(--transition);
-
-                &:hover {
-                    transform: scale(1.05);
-                }
             }
         }
 
