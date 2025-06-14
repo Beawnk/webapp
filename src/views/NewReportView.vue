@@ -181,9 +181,9 @@ const submitReport = async () => {
         top: 0;
         left: 50%;
         transform: translate(-50%, 0%);
-        width: 145%;
+        width: var(--gradient-border-width);
         height: 15vh;
-        border-radius: 0% 0 140px 140px;
+        border-radius: var(--gradient-border-radius);
         box-shadow: 0px 0px 14px 7px var(--shadow-color);
     }
 

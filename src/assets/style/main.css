@@ -6,7 +6,7 @@
 :root {
         /* colors  */
     --primary-gradient-color: linear-gradient(180deg, #9e61e1 10%, #8286cc 90%);
-    --emergency-gradient-color: linear-gradient(180deg, #ed3b4b 10%, #6a3b84 90%);
+    --emergency-gradient-color: linear-gradient(180deg, #6a3b84 -25%, #ed3b4b 100%);
     --report-gradient-color: linear-gradient(180deg, #53b4e8 10%, #4ac4ee 90%);
     --primary-color: #6200ee;
     /* --secondary-color: #f5b4b0; */
@@ -55,9 +55,10 @@
 
     --section: 55px;
     --side: 30px;
+    --gradient-border-width: 115%;
 
     --transition: all 0.3s;
-    --border-radius: 5px;
+    --gradient-border-radius: 0% 0 95px 95px;
 }
 
 * {

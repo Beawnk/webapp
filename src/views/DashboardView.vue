@@ -8,7 +8,7 @@
             <p>O que você quer denunciar?</p>
             <div class="warning">
               <p class="warning-info">Em caso de emergência, aperte no botão vermelho.</p>
-              <button class="warning-btn"></button>
+              <button class="warning-btn" @click.prevent="$router.push('/emergency')"></button>
             </div>
         </div>
     </div>
@@ -56,9 +56,9 @@ const newReport = (reportType) => {
         top: 0;
         left: 50%;
         transform: translate(-50%, 0%);
-        width: 145%;
+        width: var(--gradient-border-width);
         height: 40vh;
-        border-radius: 0% 0 25% 25%;
+        border-radius: var(--gradient-border-radius);
         box-shadow: 0px 0px 14px 7px var(--shadow-color);
     }
 
