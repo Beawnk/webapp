@@ -2,6 +2,7 @@
     <section class="register">
         <div class="gradient"></div>
         <div class="header">
+          <Menu v-if="userStore.logged === true" />
           <h2 v-if="userStore.page === 'register' || userStore.logged === false">Cadastro</h2>
           <h2 v-else>Seus dados</h2>
         </div>
@@ -184,7 +185,6 @@ onMounted(() => {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        z-index: 1;
         position: relative;
         form {
           width: 100%;
