@@ -157,19 +157,27 @@ onMounted(() => {
     ul {
 
         li {
-            padding: 15px;
             color: var(--gray-color);
             font-size: var(--subtitle-medium);
 
             &.profile {
                 border-bottom: 1px solid var(--border-color);
                 color: var(--text-secondary-color);
-                padding: 20px 15px;
+                
+                p {
+                    cursor: pointer;
+                    padding: 20px 15px;
+                }
             }
 
-            button, p {
+            button, p, a {
                 color: var(--gray-color);
                 font-size: var(--subtitle-medium);
+                padding: 15px;
+                cursor: pointer;
+                display: block;
+                width: 100%;
+                text-align: left;
 
                 &:hover {
                     color: var(--text-secondary-color);
