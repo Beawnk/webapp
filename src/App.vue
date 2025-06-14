@@ -68,6 +68,7 @@ input, textarea {
     border-radius: 10px;
     border: 1px solid var(--border-color);
     background-color: var(--input-color);
+    font-family: var(--font-family);
     font-size: var(--text-big);
     outline: none;
 

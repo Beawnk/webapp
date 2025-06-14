@@ -17,7 +17,7 @@
             <ul>
                 <li class="profile"><p @click="openProfile">{{ userFirstName }}</p></li>
                 <li><router-link to="/reports">Suas Denúncias</router-link></li>
-                <li><button class="link">Sair</button></li>
+                <li><button class="link" @click.prevent="userStore.logout">Sair</button></li>
             </ul>
         </div>
     </div>
@@ -31,8 +31,6 @@ import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
 const router = useRouter();
-
-console.log('User Store:', userStore.user);
 
 const menuOpen = ref(false);
 const menu = ref(null);

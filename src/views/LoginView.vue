@@ -5,7 +5,7 @@
       <h2>Entrar</h2>
     </div>
     <div class="form-login">
-      <form>
+      <form @submit.prevent="login">
         <div class="input-group">
           <label for="email">Email</label>
           <input type="email" id="email" placeholder="Digite seu email" v-model="email" required>
@@ -15,8 +15,8 @@
           <input type="password" id="password" placeholder="Digite sua senha" v-model="password" required>
         </div>
         <div class="btn-flex">
-          <button class="btn secondary back-btn" @click="$router.push('/')">Voltar</button>
-          <button type="submit" class="btn primary" @click.prevent="login">Entrar</button>
+          <button type="submit" class="btn primary">Entrar</button>
+          <button class="btn secondary back-btn" @click.prevent="$router.go(-1)">Voltar</button>
         </div>
       </form>
     </div>
@@ -24,10 +24,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/UserStore';
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
+const router = useRouter();
 
 const email = ref('');
 const password = ref('');
@@ -39,6 +41,12 @@ const login = () => {
     alert('Por favor, preencha todos os campos.');
   }
 }
+
+onMounted(() => {
+  if (userStore.logged) {
+    router.push('/dashboard')
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -49,9 +57,10 @@ const login = () => {
     top: 0;
     left: 50%;
     transform: translate(-50%, 0%);
-    width: 600px;
+    width: 145%;
     height: 15vh;
     border-radius: 0% 0 140px 140px;
+    box-shadow: 0px 0px 14px 7px var(--shadow-color);
   }
 
   .header {
@@ -86,6 +95,7 @@ const login = () => {
       .btn-flex {
         display: flex;
         justify-content: space-between;
+        flex-direction: row-reverse;
       }
     }
   }

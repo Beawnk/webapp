@@ -55,9 +55,9 @@
                 <input type="text" id="state" placeholder="Digite seu estado" v-model="state" required>
             </div>
             <div class="btn-flex">
-              <button class="btn secondary back-btn" @click="$router.push('/')">Voltar</button>
               <button type="submit" class="btn primary" @click.prevent="updateUserStore" @keyup.enter.prevent="updateUserStore" v-if="userStore.page === 'register' || userStore.logged === false">Cadastrar</button>
               <button type="submit" class="btn primary" @click.prevent="updateUserStore" @keyup.enter.prevent="updateUserStore" v-else>Atualizar</button>
+              <button class="btn secondary back-btn" @click.prevent="$router.go(-1)">Voltar</button>
             </div>
           </form>
         </div>
@@ -156,9 +156,10 @@ onMounted(() => {
     top: 0;
     left: 50%;
     transform: translate(-50%, 0%);
-    width: 600px;
+    width: 145%;
     height: 15vh;
     border-radius: 0% 0 140px 140px;
+    box-shadow: 0px 0px 14px 7px var(--shadow-color);
   }
 
   .header {
@@ -212,6 +213,7 @@ onMounted(() => {
           .btn-flex {
             display: flex;
             justify-content: space-between;
+            flex-direction: row-reverse;
           }
         }
     }

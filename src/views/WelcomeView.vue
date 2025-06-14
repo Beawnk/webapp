@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/UserStore'
 import { useRouter } from 'vue-router';
 import logo from '@/assets/images/logo2.png'
@@ -31,6 +31,12 @@ const openRegister = () => {
   router.push('/user-data')
   userStore.page = 'register'
 }
+
+onMounted(() => {
+  if (userStore.logged) {
+    router.push('/dashboard')
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -42,9 +48,10 @@ const openRegister = () => {
     top: 0;
     left: 50%;
     transform: translate(-50%, 0%);
-    width: 700px;
+    width: 145%;
     height: 60vh;
     border-radius: 0% 0 25% 25%;
+    box-shadow: 0px 0px 14px 7px var(--shadow-color);
   }
 
   .wrapper {
