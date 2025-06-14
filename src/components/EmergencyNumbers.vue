@@ -6,25 +6,25 @@
             </div>
             <div class="numbers-list">
                 <div class="number-item">
-                    <a href="'tel:+55-190'">190 Polícia Militar</a>
+                    <a href="tel:+55-190">190 Polícia Militar</a>
                 </div>
                 <div class="number-item">
-                    <a href="'tel:+55-193'">193 Corpo de Bombeiros</a>
+                    <a href="tel:+55-193">193 Corpo de Bombeiros</a>
                 </div>
                 <div class="number-item">
-                    <a href="'tel:+55-192'">192 Samu</a>
+                    <a href="tel:+55-192">192 Samu</a>
                 </div>
                 <div class="number-item">
-                    <a href="'tel:+55-141'">141 Centro de valorização da vida</a>
+                    <a href="tel:+55-141">141 Centro de valorização da vida</a>
                 </div>
                 <div class="number-item">
-                    <a href="'tel:+55-125'">125 Conselho Tutelar</a>
+                    <a href="tel:+55-125">125 Conselho Tutelar</a>
                 </div>
                 <div class="number-item">
-                    <a href="'tel:+55-180'">180 Delegacia da mulher</a>
+                    <a href="tel:+55-180">180 Delegacia da mulher</a>
                 </div>
                 <div class="number-item">
-                    <a href="'tel:+55-100'">100 Disque denúncia</a>
+                    <a href="tel:+55-100">100 Disque denúncia</a>
                 </div>
             </div>
         </div>
