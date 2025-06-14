@@ -42,7 +42,7 @@ const numbersBtn = ref(null);
         left: 50%;
         transform: translate(-50%, 0%);
         width: var(--gradient-border-width);
-        height: 15vh;
+        height: 17vh;
         border-radius: var(--gradient-border-radius);
         box-shadow: 0px 0px 14px 7px var(--shadow-color);
     }
@@ -53,7 +53,7 @@ const numbersBtn = ref(null);
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        height: 15vh;
+        height: 17vh;
         z-index: 1;
         position: relative;
         justify-content: center;
@@ -89,7 +89,7 @@ const numbersBtn = ref(null);
             p {
                 color: var(--emergency-text-color);
                 font-size: var(--subtitle-small);
-                max-width: 85%;
+                max-width: 80%;
             }
         }
 

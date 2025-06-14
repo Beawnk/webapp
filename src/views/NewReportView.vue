@@ -182,7 +182,7 @@ const submitReport = async () => {
         left: 50%;
         transform: translate(-50%, 0%);
         width: var(--gradient-border-width);
-        height: 15vh;
+        height: 17vh;
         border-radius: var(--gradient-border-radius);
         box-shadow: 0px 0px 14px 7px var(--shadow-color);
     }
@@ -193,7 +193,7 @@ const submitReport = async () => {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        height: 15vh;
+        height: 17vh;
         z-index: 1;
         position: relative;
     
