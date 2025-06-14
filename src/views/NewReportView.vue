@@ -10,7 +10,7 @@
             <h3>{{ props.type }}</h3>
         </div>
         <div class="report-form">
-            <form>
+            <form @submit.prevent="submitReport">
                 <div class="input-group">
                     <label for="zip-code">CEP (opcional)</label>
                     <input type="text" id="zip-code" placeholder="Digite o CEP" v-model="zip_code" @keyup="fillCep">
@@ -81,7 +81,7 @@
 					</div>
                 </div>
                 <div class="btn-flex">
-                    <button type="submit" class="btn primary" @click.prevent="$router.push('/reports')">Enviar</button>
+                    <button type="submit" class="btn primary">Enviar</button>
                     <button class="btn secondary back-btn" @click.prevent="$router.go(-1)">Voltar</button>
                 </div>
             </form>
@@ -132,6 +132,41 @@ const onFileChange = async (e) => {
 
 const removeImage = (index) => {
 	images.value.splice(index, 1);
+};
+
+const submitReport = async () => {
+  if (!description.value) {
+    alert('Por favor, preencha a descrição.');
+    return;
+  }
+
+  const reportData = {
+    Type: props.type,
+    User_id: userStore.user.id,
+    Zip_code: zip_code.value,
+    Street: street.value,
+    Number: number.value,
+    District: district.value,
+    City: city.value,
+    State: state.value,
+    Local_type: localType.value,
+    Description: description.value,
+    Images: images.value
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from('Reports')
+      .insert([reportData]);
+
+    if (error) throw error;
+
+    alert('Denúncia enviada com sucesso!');
+    // $router.push('/reports');
+  } catch (error) {
+    console.error('Erro ao enviar denúncia:', error);
+    alert('Ocorreu um erro ao enviar a denúncia. Tente novamente mais tarde.');
+  }
 };
 </script>
 
