@@ -11,6 +11,16 @@
 <style lang="scss">
 @import "@/assets/style/main.scss";
 
+main {
+    max-width: 500px;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: var(--background-color);
+}
+
 .btn {
     border-radius: 40px;
     padding: 5px 15px;

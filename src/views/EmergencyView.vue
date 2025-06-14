@@ -17,19 +17,24 @@
         </div>
         <div class="btn-flex">
             <button class="btn secondary back-btn" @click="$router.go(-1)">Voltar</button>
-            <button class="btn secondary numbers">Números de emergência</button>
+            <button class="btn secondary numbers" @click.prevent="openNumbers = !openNumbers" ref="numbersBtn">Números de emergência</button>
         </div>
+        <EmergencyNumbers :class="{ open: openNumbers }" @close="openNumbers = false"/>
     </div>
   </section>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import { useClickOutside } from '@/composables/clickOutside';
+import EmergencyNumbers from '@/components/EmergencyNumbers.vue';
 
+const openNumbers = ref(false);
+const numbersBtn = ref(null);
 </script>
 
 <style lang="scss" scoped>
 .emergency-view {
-
     .gradient {
         background: var(--emergency-gradient-color);
         position: absolute;
