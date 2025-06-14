@@ -16,6 +16,7 @@
             </div>
             <ul>
                 <li class="profile"><p @click="openProfile">{{ userFirstName }}</p></li>
+                <li><router-link to="/dashboard">Home</router-link></li>
                 <li><router-link to="/reports">Suas Denúncias</router-link></li>
                 <li><button class="link" @click.prevent="userStore.logout">Sair</button></li>
             </ul>

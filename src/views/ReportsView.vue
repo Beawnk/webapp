@@ -7,7 +7,7 @@
         </div>
         <div class="content">
             <div class="reports-list">
-                <div class="report-item" v-for="report in reports" :key="report.id">
+                <div class="report-item" v-for="report in reports" :key="report.id" @click="$router.push({ name: 'report', params: { id: report.id } })">
                     <div class="report-icon">
                         <img :src="report.icon" alt="Ícone da denúncia" />
                     </div>
@@ -16,7 +16,7 @@
                             <h3>{{ report.Type }}</h3>
                             <span class="date">{{ new Date(report.created_at).toLocaleDateString('pt-BR') }}</span>
                         </div>
-                        <p>{{ report.Description }}</p>
+                        <p>{{ truncatedText(report.Description, 100, '...') }}</p>
                     </div>
                 </div>
             </div>
@@ -61,10 +61,11 @@ const fetchReports = async () => {
         .order('created_at', { ascending: false });
 
     if (error) {
-        console.error('Error fetching reports:', error);
+      console.error('Error fetching reports:', error);
+      reports.value = [];
     } else {
-        reports.value = data;
-        addReportIcons();
+      reports.value = Array.isArray(data) ? data : [];
+      addReportIcons();
     }
 };
 
@@ -73,6 +74,10 @@ const addReportIcons = () => {
         report.icon = reportIcons[report.Type] || defaultIcon;
     });
 };
+
+const truncatedText = (string, letters, end = '') => {
+	return string.substring(0, letters) + end
+}
 
 onMounted(() => {
     fetchReports();
@@ -127,6 +132,11 @@ onMounted(() => {
                 align-items: center;
                 justify-content: flex-start;
                 position: relative;
+                transition: var(--transition);
+
+                &:hover {
+                    transform: scale(1.02);
+                }
 
                 .report-icon {
                     width: 50px;

@@ -42,10 +42,10 @@
                     <CustomSelect
                       v-model="localType"
                       :options="[
-                        { label: 'Residencial', value: 'residential' },
-                        { label: 'Comercial', value: 'commercial' },
-                        { label: 'Público', value: 'public' },
-                        { label: 'Outro', value: 'other' }
+                        { label: 'Residencial', value: 'Residencial' },
+                        { label: 'Comercial', value: 'Comercial' },
+                        { label: 'Público', value: 'Público' },
+                        { label: 'Outro', value: 'Outro' }
                       ]"
                       label="Selecione"
                     />
@@ -96,12 +96,14 @@ import { useHandleImages } from '@/composables/handleImages';
 import { useGetAddress } from '@/composables/getAddress';
 import { useUserStore } from '@/stores/UserStore';
 import { supabase } from '@/lib/supabaseClient';
+import { useRouter } from 'vue-router';
 import Menu from '@/components/Menu.vue';
 import CustomSelect from '@/components/CustomSelect.vue'
 
 const props = defineProps(['type'])
 
 const userStore = useUserStore();
+const router = useRouter();
 
 const imgHoverIndex = ref(null);
 
@@ -162,7 +164,7 @@ const submitReport = async () => {
     if (error) throw error;
 
     alert('Denúncia enviada com sucesso!');
-    // $router.push('/reports');
+    router.push('/reports');
   } catch (error) {
     console.error('Erro ao enviar denúncia:', error);
     alert('Ocorreu um erro ao enviar a denúncia. Tente novamente mais tarde.');
