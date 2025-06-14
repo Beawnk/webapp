@@ -59,6 +59,7 @@ watch(() => props.searchQuery, (newVal) => {
 
     .card {
         background-color: var(--white-color);
+        cursor: pointer;
         border-radius: 20px;
         padding: 15px;
         display: flex;
