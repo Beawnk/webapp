@@ -50,19 +50,40 @@ watch(isOpen, open => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .custom-select {
   position: relative;
   width: 100%;
   max-width: 100%;
 }
 .select-wrapper {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 12px;
-  background: var(--input-color);
-  cursor: pointer;
-  user-select: none;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    background: var(--input-color);
+    cursor: pointer;
+    user-select: none;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        background-image: url('@/assets/images/icons/down-icon-blue.png');
+        background-size: 10px;
+        background-repeat: no-repeat;
+        transition: var(--transition);
+    }
+
+    &.open {
+       
+        &::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+    }
 }
 .selected {
   color: var(--gray-color);
@@ -91,5 +112,6 @@ watch(isOpen, open => {
 .options li.selected,
 .options li:hover {
   background: var(--btn-report-color);
+  color: var(--white-color);
 }
 </style>

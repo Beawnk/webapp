@@ -183,7 +183,7 @@ const removeImage = (index) => {
                 display: flex;
                 flex-direction: column;
 
-                input {
+                input, textarea {
 
                     &:focus {
                         border-color: var(--report-color);
