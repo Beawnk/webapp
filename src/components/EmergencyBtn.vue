@@ -3,19 +3,43 @@
         <button class="emergency" @click.prevent="openForm = true">Chamar Ajuda</button>
     </div>
     <div class="emergency-form" :class="{ open: openForm }">
-        <div class="container">
+        <div class="container" ref="formContainer">
             <h2>Chamar ajuda</h2>
-            <form class="">
+            <form class="" @submit.prevent="sendEmergency">
                 <div class="input-group">
                     <label for="local">Sua localização atual</label>
                     <div id="map" style="height: 200px;"></div>
                 </div>
                 <div class="input-group">
                     <label for="message">Mensagem (opcional)</label>
-                    <textarea id="message" rows="4" placeholder="Descreva sua situação..."></textarea>
+                    <textarea id="message" rows="3" placeholder="Descreva sua situação..."></textarea>
                 </div>
                 <div class="input-group">
-                    
+                    <label for="send-to">Mandar para:</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="police" value="police" v-model="checked">
+                        <label for="police">Polícia Militar</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="ambulance" value="ambulance" v-model="checked">
+                        <label for="ambulance">Ambulância</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="fire" value="fire" v-model="checked">
+                        <label for="fire">Corpo de Bombeiros</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="samu" value="samu" v-model="checked">
+                        <label for="samu">SAMU</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="emergency-contacts" value="emergency-contacts" v-model="checked" checked>
+                        <label for="emergency-contacts">Contatos de emergência</label>
+                    </div>
+                </div>
+                <div class="btn-flex">
+                    <button type="button" class="btn secondary" @click="openForm = false">Cancelar</button>
+                    <button type="submit" class="btn primary">Enviar</button>
                 </div>
             </form>
         </div>
@@ -24,8 +48,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { onClickOutside } from '@vueuse/core'
 
 const openForm = ref(false);
+const formContainer = ref(null);
 
 const minimalStyle = [
   { featureType: "all", elementType: "labels", stylers: [{ visibility: "on" }] },
@@ -33,6 +59,13 @@ const minimalStyle = [
   { featureType: "water", elementType: "geometry", stylers: [{ color: "#e9e9e9" }] },
   { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#f5f5f5" }] }
 ];
+
+const sendEmergency = () => {
+    alert("Mensagem de emergência enviada!");
+    openForm.value = false;
+}
+
+onClickOutside(formContainer, event => openForm.value = false)
 
 onMounted(() => {
   navigator.geolocation.getCurrentPosition((position) => {
@@ -138,6 +171,34 @@ onMounted(() => {
                 width: 100%;
                 height: 200px;
                 border-radius: 20px;
+            }
+
+            .checkbox-group {
+                margin-bottom: 10px;
+
+                label {
+                    color: var(--text-color);
+                    font-size: var(--subtitle-small);
+                }
+            }
+        }
+
+        .btn-flex {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+
+            .btn {
+
+                &.secondary {
+                    color: var(--emergency-color);
+                    border-color: var(--emergency-color);
+                }
+
+                &.primary {
+                    background-color: var(--emergency-color);
+                    border-color: var(--emergency-color);
+                }
             }
         }
     }

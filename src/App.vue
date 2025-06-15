@@ -98,4 +98,59 @@ label {
     display: block;
 }
 
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    input[type="checkbox"] {
+        /* Hide the default checkbox */
+        opacity: 0;
+        width: 0;
+        height: 0;
+        position: absolute;
+    }
+
+    /* Custom box */
+    label {
+        position: relative;
+        padding-left: 30px;
+        cursor: pointer;
+        user-select: none;
+        padding-top: 2px;
+
+        &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--white-color);
+            border-radius: 50%;
+            background: transparent;
+            transition: background 0.2s;
+        }
+    }
+
+    /* Checked state */
+    input[type="checkbox"]:checked + label::before {
+        background: var(--white-color);
+        border-color: var(--white-color);
+    }
+
+    /* Checkmark */
+    input[type="checkbox"]:checked + label::after {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 8px;
+        width: 7.5px;
+        height: 4px;
+        border-left: 2px solid #6a3b84;
+        border-bottom: 2px solid #6a3b84;
+        transform: rotate(-45deg);
+    }
+}
+
 </style>
