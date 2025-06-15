@@ -201,7 +201,7 @@ onMounted(() => {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background-color: rgba(73, 73, 73, 0.31);
     z-index: 12;
     transition: var(--transition);
@@ -227,11 +227,17 @@ onMounted(() => {
         padding: 30px;
         border-radius: 50px 50px 0 0;
         transition: var(--transition);
+        max-height: 90vh;
 
         h2 {
             color: var(--white-color);
             font-size: var(--title-small);
             margin-bottom: 40px;
+        }
+
+        form {
+            max-height: 60vh;
+            overflow-y: auto;
         }
 
         .input-group {
