@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { useUserStore } from '@/stores/UserStore'
 import { useRouter } from 'vue-router';
 import logo from '@/assets/images/logo2.png'
@@ -32,7 +32,7 @@ const openRegister = () => {
   userStore.page = 'register'
 }
 
-onMounted(() => {
+onBeforeMount(() => {
   if (userStore.logged) {
     router.push('/dashboard')
   }

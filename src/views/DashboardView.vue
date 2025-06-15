@@ -23,14 +23,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { useUserStore } from '@/stores/UserStore';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import ReportTypeSearch from '@/components/ReportTypeSearch.vue';
 import ReportCards from '@/components/ReportCards.vue';
 
 const userStore = useUserStore();
-const route = useRoute();
 const router = useRouter();
 
 const searchQuery = ref('')
@@ -45,6 +44,12 @@ const newReport = (reportType) => {
     params: { type: reportType }
   });
 };
+
+onBeforeMount(() => {
+  if (!userStore.logged) {
+    router.push({ name: 'login' });
+  }
+});
 </script>
 
 <style lang="scss" scoped>

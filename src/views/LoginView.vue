@@ -8,11 +8,13 @@
       <form @submit.prevent="login">
         <div class="input-group">
           <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Digite seu email" v-model="email" required>
+          <input type="email" id="email" placeholder="Digite seu email" v-model="email" @blur="validateField('email')">
+          <FieldNotifications field="email"/>
         </div>
         <div class="input-group">
           <label for="password">Senha</label>
-          <input type="password" id="password" placeholder="Digite sua senha" v-model="password" required>
+          <input type="password" id="password" placeholder="Digite sua senha" v-model="password" @blur="validateField('password')">
+          <FieldNotifications field="password"/>
         </div>
         <div class="btn-flex">
           <button type="submit" class="btn primary">Entrar</button>
@@ -25,22 +27,49 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useForm, useField } from 'vee-validate';
 import { useUserStore } from '@/stores/UserStore';
 import { useRouter } from 'vue-router';
+import * as yup from 'yup';
 
 const userStore = useUserStore();
 const router = useRouter();
 
-const email = ref('');
-const password = ref('');
+const loginSchema = yup.object({
+  email: yup.string()
+    .required('Digite seu email')
+    .email('Digite um email válido'),
+  password: yup.string()
+    .required('Digite sua senha')
+});
 
-const login = () => {
-  if (email.value && password.value) {
-    userStore.login(email.value, password.value);
-  } else {
-    alert('Por favor, preencha todos os campos.');
+const { handleSubmit } = useForm({
+  validationSchema: loginSchema,
+  validateOnMount: false
+});
+
+const { value: email, validate: validateEmail } = useField('email', undefined, {
+  validateOnValueUpdate: false
+});
+const { value: password, validate: validatePassword } = useField('password', undefined, {
+  validateOnValueUpdate: false
+});
+
+const validateField = (fieldName) => {
+  if (fieldName === 'email') {
+    validateEmail();
+  } else if (fieldName === 'password') {
+    validatePassword();
   }
-}
+};
+
+const login = handleSubmit(async (values) => {
+  try {
+    await userStore.login(values.email, values.password);
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
+});
 
 onMounted(() => {
   if (userStore.logged) {

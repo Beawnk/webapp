@@ -2,10 +2,12 @@ import { defineStore } from 'pinia';
 import { ref, reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { supabase } from '@/lib/supabaseClient';
+import { useAlertStore } from '@/stores/alertStore';
 
 export const useUserStore = defineStore('user', () => {
     const route = useRoute();
   	const router = useRouter();
+    const alertStore = useAlertStore();
 
     const logged = ref(false);
 
@@ -46,8 +48,11 @@ export const useUserStore = defineStore('user', () => {
   	};
 
     const login = async (email, password) => {
+        alertStore.clearNotifications();
         try {
             if (!email || !password) {
+                if (!email) alertStore.setFieldError('email', 'Digite seu email.');
+				if (!password) alertStore.setFieldError('password', 'Digite sua senha.');
                 throw new Error('Erro de validação. Verifique os campos e tente novamente.');
             }
             
@@ -57,6 +62,7 @@ export const useUserStore = defineStore('user', () => {
             });
 
             if (error) {
+                alertStore.addGlobalError('Email ou senha inválidos.');
                 throw error;
             }
 
@@ -68,6 +74,7 @@ export const useUserStore = defineStore('user', () => {
                 .single();
 
                 if (userError) {
+                    alertStore.addGlobalError('Erro ao carregar informações do usuário.');
                     throw userError;
                 }
 
@@ -88,15 +95,20 @@ export const useUserStore = defineStore('user', () => {
                 saveUserToLocalStorage();
 
                 router.push({ name: 'dashboard' });
+                alertStore.addGlobalSuccess('Login efetuado com sucesso.');
             }
         } catch (error) {
+            alertStore.addGlobalError('Erro ao efetuar login', error.message);
             throw error;
         }
     }
 
     const register = async (email, password) => {
+        alertStore.clearNotifications();
         try {
             if (!email || !password) {
+                if (!email) alertStore.setFieldError('email', 'Digite seu email.');
+				if (!password) alertStore.setFieldError('password', 'Digite sua senha.');
                 throw new Error('Erro de validação. Verifique os campos e tente novamente.');
             }
 
@@ -106,7 +118,7 @@ export const useUserStore = defineStore('user', () => {
             });
 
             if (error) {
-                console.error('Erro ao criar conta:1', error);
+                alertStore.addGlobalError('Erro ao criar conta.', authError);
                 throw error;
             }
 
@@ -130,19 +142,42 @@ export const useUserStore = defineStore('user', () => {
                     .insert([userData]);
 
                 if (insertError) {
+                    alertStore.addGlobalError('Erro ao salvar informações do usuário.', insertError.message);
                     throw insertError;
                 }
 
                 await login(email, password);
+
+                alertStore.addGlobalSuccess('Conta criada com sucesso.');
             }
         } catch (error) {
-            console.error('Erro ao criar conta.2', error);
+            alertStore.addGlobalError('Erro ao criar conta.', error.message);
             throw error;
         }
     }
 
     const updateUser = async () => {
+        alertStore.clearNotifications();
         try {
+            const { data: session } = await supabase.auth.getSession();
+
+			if (!session) {
+				alertStore.addGlobalError('Sessão expirada. Faça login novamente.');
+			  	throw new Error('Sessão expirada. Faça login novamente.');
+			}
+
+            const { email: currentEmail } = await supabase.auth.getUser();
+		  	if (user.Email !== currentEmail) {
+				const { error: authError } = await supabase.auth.updateUser({
+			  	email: user.Email,
+				});
+	  
+				if (authError) {
+			  		alertStore.addGlobalError('Erro ao atualizar email de autenticação.', authError.message);
+					throw new Error(`Error updating auth email: ${authError.message}`);
+				}
+		  	}
+
             const { error } = await supabase
                 .from('Users')
                 .update({
@@ -158,23 +193,25 @@ export const useUserStore = defineStore('user', () => {
                 .eq('id', user.id);
 
             if (error) {
+                alertStore.addGlobalError('Erro ao atualizar informações do usuário.', error.message);
                 throw error;
             }
 
-            window.alert('Dados atualizados com sucesso!');
+            alertStore.addGlobalSuccess('Informações do usuário atualizadas com sucesso.');
 
             saveUserToLocalStorage();
         } catch (error) {
-            window.alert('Erro ao atualizar os dados. Tente novamente mais tarde.');
-            console.error('Erro ao atualizar usuário:', error);
+            alertStore.addGlobalError('Erro ao atualizar informações do usuário.', error.message);
             throw error;
         }
     }
 
     const logout = async () => {
+        alertStore.clearNotifications();
         try {
             const { error } = await supabase.auth.signOut();
             if (error && error.name !== 'AuthSessionMissingError') {
+                alertStore.addGlobalError('Erro ao efetuar logout.');
                 throw error;
             }
             clearLocalStorage();
@@ -193,8 +230,11 @@ export const useUserStore = defineStore('user', () => {
             });
             logged.value = false;
             router.push({ name: 'welcome' });
+
+            alertStore.addGlobalSuccess('Logout efetuado com sucesso.');
         } catch (error) {
-            console.error('Erro ao fazer logout:', error);
+            alertStore.addGlobalError('Erro ao efetuar logout:', error.message);
+            throw error;
         }
     }
 

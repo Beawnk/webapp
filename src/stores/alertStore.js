@@ -12,7 +12,7 @@ export const useAlertStore = defineStore('notification', () => {
     globalErrors.value.push(message);
     setTimeout(() => {
       globalErrors.value.shift(); // Auto-remove after 5 seconds
-    }, 5000);
+    }, 4000);
   };
 
   // Add a global success
@@ -20,7 +20,7 @@ export const useAlertStore = defineStore('notification', () => {
     globalSuccesses.value.push(message);
     setTimeout(() => {
       globalSuccesses.value.shift(); // Auto-remove after 5 seconds
-    }, 5000);
+    }, 4000);
   };
 
   // Set a field-specific error

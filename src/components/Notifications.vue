@@ -25,34 +25,54 @@ const props = defineProps({
   	position: fixed;
   	top: 40px;
   	right: 50%;
-  	transform: translateX(50%);
-  	display: flex;
-  	flex-direction: column;
-  	align-items: flex-end;
+	transform: translateX(50%);
   	z-index: 2000;
-	width: fit-content;
-  	max-width: 600px;
+  	max-width: 500px;
+	width: 80%;
 	.alert {
 		color: var(--white-color);
 		padding: 10px 40px 10px 10px;
-		border-radius: var(--border-radius);
+		border-radius: 30px;
 		margin-bottom: 10px;
 		background-size: 20px;
-		background-repeat: no-repeat;
-		background-position: calc(100% - 10px) 10px;
+		display: flex;
+  		flex-direction: column;
+		align-items: center;
+		gap: 5px;
+		width: 100%;
+		position: relative;
+
+		&:after {
+			content: '';
+			display: block;
+			width: 20px;
+			height: 20px;
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-position: center;
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+		
 		&:last-child {
 			margin-bottom: 0;
 		}
+		
 		&.success {
 			background-color: var(--success-color);
-			background-image: url('../assets/img/icons/check-mark.png');
-			background-size: 15px;
-			background-position: calc(100% - 10px) 15px;
+			&:after {
+				background-image: url('@/assets/images/icons/check-mark.png');
+				background-size: 15px;
+			}
 		}
+
 		&.error {
 			background-color: var(--error-color);
-			background-image: url('../assets/img/icons/alert.png');
-			
+			&:after {
+				background-image: url('@/assets/images/icons/alert.png');
+			}
 		}
 	}
 }
