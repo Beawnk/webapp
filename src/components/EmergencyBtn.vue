@@ -60,7 +60,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { onClickOutside } from '@vueuse/core'
+import { useAlertStore } from "@/stores/alertStore";
 
+const alertStore = useAlertStore();
 const openForm = ref(false);
 const formContainer = ref(null);
 const userLocation = ref({ lat: null, lng: null });
@@ -114,7 +116,7 @@ const onAddressInput = () => {
 };
 
 const sendEmergency = () => {
-    alert(`Mensagem de emergência enviada!\nLocalização:  ${userAddress.value}`);
+    alertStore.addGlobalSuccess(`Mensagem de emergência enviada!\nLocalização:  ${userAddress.value}`);
     openForm.value = false;
 }
 
@@ -163,7 +165,7 @@ onMounted(() => {
     },
     (error) => {
         console.error("Erro ao obter localização:", error);
-        alert("Não foi possível obter sua localização. Por favor, ative o GPS.");
+        alertStore.addGlobalError("Não foi possível obter sua localização. Por favor, ative o GPS.");
     }, 
     {
         enableHighAccuracy: true
