@@ -1,11 +1,25 @@
 <template>
     <main>
+        <Notifications v-if="alertStore.globalErrors.length || alertStore.globalSuccesses.length"
+          :errors="alertStore.globalErrors" 
+          :successes="alertStore.globalSuccesses" 
+        />
         <router-view/>
     </main>
 </template>
 
 <script setup>
+import { onMounted, watch } from 'vue';
+import { useUserStore } from '@/stores/UserStore';
+import Notifications from '@/components/Notifications.vue';
+import { useAlertStore } from '@/stores/alertStore';
 
+const alertStore = useAlertStore();
+const userStore = useUserStore();
+
+onMounted(() => {
+  userStore.loadUserFromLocalStorage();
+});
 </script>
 
 <style lang="scss">

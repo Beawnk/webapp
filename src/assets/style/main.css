@@ -10,14 +10,13 @@
     --emergency-gradient-color-second: linear-gradient(180deg, #ed3b4b 10%, #6a3b84 90%);
     --report-gradient-color: linear-gradient(180deg, #53b4e8 10%, #4ac4ee 90%);
     --primary-color: #6200ee;
-    /* --secondary-color: #f5b4b0; */
     --background-color: #f3f3f3;
     --text-color: #FFF;
     --text-secondary-color: #23036A;
     --hover-color: #F2E7FE;
-    /* --success-color: #2ce27e;
+    --success-color: #2ce27e;
     --info-color: #667dff;
-    --warning-color: #FAC975; */
+    --warning-color: #FAC975;
     --error-color: #fd003a;
     --emergency-color: #EF3B49;
     --bg-emergency-color: #ecd6da;
