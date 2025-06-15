@@ -1,8 +1,12 @@
+import { useAlertStore } from "@/stores/alertStore";
+
 export async function useHandleImages(fileImages, e) {
+  const alertStore = useAlertStore();
+  alertStore.clearNotifications();
   const files = e.target.files;
 
-  // Check if the number of images exceeds 5
-  if (fileImages.length + files.length > 5) {
+  if (fileImages.length + files.length > 3) {
+    alertStore.setFieldError("images", "Você só pode adicionar até 3 imagens.");
     return fileImages;
   }
 
@@ -14,7 +18,10 @@ export async function useHandleImages(fileImages, e) {
     // Check if the file is an image in PNG, JPG, or JPEG format
     const fileType = file.type;
     if (!["image/png", "image/jpeg", "image/jpg"].includes(fileType)) {
-
+      alertStore.setFieldError(
+        "images",
+        "Apenas imagens em formato PNG, JPG, e JPEG são permitidas."
+      );
       continue; // Skip invalid file
     }
 
@@ -32,3 +39,4 @@ export async function useHandleImages(fileImages, e) {
   fileImages.push(...validImages); // Update the array with valid images
   return fileImages; // Return updated array
 }
+

@@ -179,6 +179,11 @@ const fillCep = async () => {
     district.value = address.bairro;
     city.value = address.localidade;
     state.value = address.uf;
+
+    validateField('street');
+    validateField('district');
+    validateField('city');
+    validateField('state');
   }
 };
 
