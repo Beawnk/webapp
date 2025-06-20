@@ -5,10 +5,12 @@
           :successes="alertStore.globalSuccesses" 
         />
         <router-view/>
+        <SpeedInsights />
     </main>
 </template>
 
 <script setup>
+import { SpeedInsights } from '@vercel/speed-insights/vue';
 import { onMounted, watch } from 'vue';
 import { useUserStore } from '@/stores/UserStore';
 import Notifications from '@/components/Notifications.vue';
