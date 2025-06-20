@@ -27,7 +27,7 @@ const props = defineProps({
   	right: 50%;
 	transform: translateX(50%);
   	z-index: 2000;
-  	max-width: 500px;
+  	max-width: 450px;
 	width: 80%;
 	.alert {
 		color: var(--white-color);

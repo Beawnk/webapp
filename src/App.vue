@@ -32,6 +32,7 @@ main {
     position: relative;
     width: 100%;
     height: 100%;
+    margin: 0 auto;
     min-height: 100vh;
     overflow: hidden;
     background-color: var(--background-color);
