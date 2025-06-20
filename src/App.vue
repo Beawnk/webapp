@@ -5,8 +5,8 @@
           :successes="alertStore.globalSuccesses" 
         />
         <router-view/>
-        <SpeedInsights />
     </main>
+    <SpeedInsights />
 </template>
 
 <script setup>
