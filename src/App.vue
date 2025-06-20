@@ -126,21 +126,28 @@ label {
         width: 0;
         height: 0;
         position: absolute;
+        z-index: -1;
+        top: 0;
     }
 
     /* Custom box */
     label {
         position: relative;
+        margin-bottom: 0 !important;
         padding-left: 30px;
         cursor: pointer;
         user-select: none;
         padding-top: 2px;
+        min-height: 22px;
+        display: flex;
+        align-items: center;
 
         &::before {
             content: "";
             position: absolute;
             left: 0;
-            top: 2px;
+            top: 50%;
+            transform: translateY(-50%);
             width: 16px;
             height: 16px;
             border: 2px solid var(--white-color);
