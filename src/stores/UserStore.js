@@ -118,7 +118,7 @@ export const useUserStore = defineStore('user', () => {
             });
 
             if (error) {
-                alertStore.addGlobalError('Erro ao criar conta.', authError);
+                alertStore.addGlobalError(`Erro ao criar conta. ${error.message}`);
                 throw error;
             }
 
@@ -166,17 +166,18 @@ export const useUserStore = defineStore('user', () => {
 			  	throw new Error('Sessão expirada. Faça login novamente.');
 			}
 
-            const { email: currentEmail } = await supabase.auth.getUser();
-		  	if (user.Email !== currentEmail) {
-				const { error: authError } = await supabase.auth.updateUser({
-			  	email: user.Email,
-				});
-	  
-				if (authError) {
-			  		alertStore.addGlobalError('Erro ao atualizar email de autenticação.', authError.message);
-					throw new Error(`Error updating auth email: ${authError.message}`);
-				}
-		  	}
+            const { data: { user: authUser } } = await supabase.auth.getUser();
+            const currentEmail = authUser?.email;
+            if (user.Email !== currentEmail) {
+                const { error: authError } = await supabase.auth.updateUser({
+                    email: user.Email,
+                });
+
+                if (authError) {
+                    alertStore.addGlobalError('Erro ao atualizar email de autenticação.', authError.message);
+                    throw new Error(`Error updating auth email: ${authError.message}`);
+                }
+            }
 
             const { error } = await supabase
                 .from('Users')
