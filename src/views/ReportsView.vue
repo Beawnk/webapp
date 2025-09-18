@@ -76,8 +76,11 @@ const addReportIcons = () => {
 };
 
 const truncatedText = (string, letters, end = '') => {
-	return string.substring(0, letters) + end
-}
+  if (!string) return '';
+  return string.length > letters
+    ? string.substring(0, letters) + end
+    : string;
+};
 
 onMounted(() => {
     fetchReports();
