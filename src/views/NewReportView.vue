@@ -122,9 +122,13 @@ const imgHoverIndex = ref(null);
 
 const reportSchema = yup.object({
     cep: yup
-      .string()
-      .transform((value) => value.replace(/\D/g, ''))
-      .matches(/^\d{8}$/, 'CEP deve conter 8 dígitos'),
+    .string()
+    .nullable()
+    .notRequired()
+    .test('valid-cep', 'CEP deve conter 8 dígitos', (value) => {
+      if (!value) return true; 
+      return /^\d{8}$/.test(value); 
+    }),
     street: yup.string().required('Digite a rua'),
     number: yup.string().required('Digite o número'),
     district: yup.string().required('Digite o bairro'),
