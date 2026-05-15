@@ -13,11 +13,9 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL_PROJECT_A }}
       SUPABASE_ANON: ${{ secrets.SUPABASE_ANON_PROJECT_A }}
     steps:
-      - name: Ping RPC healthcheck
+      - name: Ping Supabase auth health
         run: |
           set -e
-          curl -sS -X POST "$SUPABASE_URL/rest/v1/rpc/healthcheck" \
+          curl --fail-with-body -sS "$SUPABASE_URL/auth/v1/health" \
             -H "apikey: $SUPABASE_ANON" \
-            -H "Authorization: Bearer $SUPABASE_ANON" \
-            -H "Content-Type: application/json" \
-            -d '{}' | jq .
+            -H "Authorization: Bearer $SUPABASE_ANON" | jq .
