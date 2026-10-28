@@ -32,31 +32,16 @@
 import { ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/UserStore';
 import { supabase } from '@/lib/supabaseClient';
-
-import dangerIcon from '@/assets/images/icons/danger.png'
-import femenineIcon from '@/assets/images/icons/femenine.png'
-import robberIcon from '@/assets/images/icons/robber.png'
-import accidentIcon from '@/assets/images/icons/accident.png'
-import disasterIcon from '@/assets/images/icons/disaster.png'
-import pawprintIcon from '@/assets/images/icons/pawprint.png'
-import defaultIcon from '@/assets/images/icons/alarm.png';
+import { getReportIcon } from '@/constants/reportTypes';
 
 const userStore = useUserStore();
 const reports = ref([]);
 
-const reportIcons = {
-    'Incêndio': dangerIcon,
-    'Violência doméstica': femenineIcon,
-    'Assalto': robberIcon,
-    'Acidente de trânsito': accidentIcon,
-    'Árvore caída': disasterIcon,
-    'Animal perdido': pawprintIcon
-};
-
 const fetchReports = async () => {
+    // Only what the list shows: select('*') would also download every report's images
     const { data, error } = await supabase
         .from('Reports')
-        .select('*')
+        .select('id, Type, Description, created_at')
         .eq('User_id', userStore.user.id)
         .order('created_at', { ascending: false });
 
@@ -64,15 +49,11 @@ const fetchReports = async () => {
       console.error('Error fetching reports:', error);
       reports.value = [];
     } else {
-      reports.value = Array.isArray(data) ? data : [];
-      addReportIcons();
+      reports.value = (data || []).map(report => ({
+        ...report,
+        icon: getReportIcon(report.Type)
+      }));
     }
-};
-
-const addReportIcons = () => {
-    reports.value.forEach(report => {
-        report.icon = reportIcons[report.Type] || defaultIcon;
-    });
 };
 
 const truncatedText = (string, letters, end = '') => {

@@ -1,28 +1,37 @@
 import { useAlertStore } from "@/stores/alertStore";
 
+const MAX_IMAGES = 3;
+const MAX_SIZE_MB = 2;
+
 export async function useHandleImages(fileImages, e) {
   const alertStore = useAlertStore();
-  alertStore.clearNotifications();
-  const files = e.target.files;
+  // Only this field's error: clearing everything would also drop the global toasts
+  alertStore.clearFieldError("images");
+  const files = [...e.target.files];
+  // Reset the input so picking the same file again still fires "change"
+  e.target.value = "";
 
-  if (fileImages.length + files.length > 3) {
-    alertStore.setFieldError("images", "Você só pode adicionar até 3 imagens.");
+  if (fileImages.length + files.length > MAX_IMAGES) {
+    alertStore.setFieldError("images", `Você só pode adicionar até ${MAX_IMAGES} imagens.`);
     return fileImages;
   }
 
   const validImages = [];
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-
+  for (const file of files) {
     // Check if the file is an image in PNG, JPG, or JPEG format
-    const fileType = file.type;
-    if (!["image/png", "image/jpeg", "image/jpg"].includes(fileType)) {
+    if (!["image/png", "image/jpeg"].includes(file.type)) {
       alertStore.setFieldError(
         "images",
         "Apenas imagens em formato PNG, JPG, e JPEG são permitidas."
       );
       continue; // Skip invalid file
+    }
+
+    // Images are saved as base64 inside the report row, so big photos bloat it
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      alertStore.setFieldError("images", `Cada imagem pode ter no máximo ${MAX_SIZE_MB} MB.`);
+      continue;
     }
 
     // Read the file as a Data URL using FileReader
@@ -36,7 +45,5 @@ export async function useHandleImages(fileImages, e) {
     validImages.push(fileDataUrl); // Add valid image
   }
 
-  fileImages.push(...validImages); // Update the array with valid images
-  return fileImages; // Return updated array
+  return [...fileImages, ...validImages];
 }
-

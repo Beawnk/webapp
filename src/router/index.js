@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Welcome from '../views/WelcomeView.vue'
 import { useUserStore } from '@/stores/UserStore'
+import { isReportType } from '@/constants/reportTypes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,7 +48,9 @@ const router = createRouter({
       name: 'new-report',
       component: () => import('@/views/NewReportView.vue'),
       props: true,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      // The type comes from the URL and is saved as-is in Reports.Type
+      beforeEnter: (to) => isReportType(to.params.type) || { name: 'dashboard' }
     },
     {
       path: '/reports',

@@ -25,7 +25,7 @@
             </div>
             <div class="input-group">
               <label for="birthdate">Data de nascimento</label>
-              <input type="date" id="birthdate" placeholder="Digite sua senha" v-model="birthdate" @blur="validateField('birthdate')" :disabled="!isRegister">
+              <input type="date" id="birthdate" v-model="birthdate" @blur="validateField('birthdate')" :disabled="!isRegister">
               <FieldNotifications field="birthdate"/>
             </div>
             <div class="input-group">

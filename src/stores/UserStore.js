@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
 import { useAlertStore } from '@/stores/alertStore';
 
@@ -24,6 +24,8 @@ export const useUserStore = defineStore('user', () => {
 
     const logged = ref(false);
     const user = reactive(emptyUser());
+
+    const firstName = computed(() => (user.Name ? user.Name.split(' ')[0] : 'Usuário'));
 
     const resetUser = () => {
         Object.assign(user, emptyUser());
@@ -218,6 +220,7 @@ export const useUserStore = defineStore('user', () => {
     return {
         logged,
         user,
+        firstName,
         ready,
         login,
         register,

@@ -32,8 +32,6 @@ watch(() => userStore.logged, (logged) => {
 </script>
 
 <style lang="scss">
-@import "@/assets/style/main.scss";
-
 main {
     max-width: 500px;
     position: relative;

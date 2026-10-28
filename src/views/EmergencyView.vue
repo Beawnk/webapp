@@ -15,7 +15,7 @@
         <EmergencyBtn/>
         <div class="btn-flex">
             <button class="btn secondary back-btn" @click="$router.go(-1)">Voltar</button>
-            <button class="btn secondary numbers" @click.prevent="openNumbers = !openNumbers" ref="numbersBtn">Números de emergência</button>
+            <button class="btn secondary numbers" @click.prevent="openNumbers = !openNumbers">Números de emergência</button>
         </div>
         <EmergencyNumbers :class="{ open: openNumbers }" @close="openNumbers = false"/>
     </div>
@@ -28,7 +28,6 @@ import EmergencyNumbers from '@/components/EmergencyNumbers.vue';
 import EmergencyBtn from '@/components/EmergencyBtn.vue';
 
 const openNumbers = ref(false);
-const numbersBtn = ref(null);
 </script>
 
 <style lang="scss" scoped>

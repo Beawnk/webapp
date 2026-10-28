@@ -1,6 +1,6 @@
 <template>
   <div class="cards">
-        <div class="card" v-for="(item, idx) in filteredItems" :key="idx" @click="$emit('reportSelected', item.label)">
+        <div class="card" v-for="item in filteredItems" :key="item.label" @click="$emit('reportSelected', item.label)">
           <div class="icon">
             <img :src="item.icon" alt="">
           </div>
@@ -10,45 +10,23 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import dangerIcon from '@/assets/images/icons/danger.png'
-import femenineIcon from '@/assets/images/icons/femenine.png'
-import robberIcon from '@/assets/images/icons/robber.png'
-import accidentIcon from '@/assets/images/icons/accident.png'
-import disasterIcon from '@/assets/images/icons/disaster.png'
-import pawprintIcon from '@/assets/images/icons/pawprint.png'
+import { computed } from 'vue'
+import { reportTypes } from '@/constants/reportTypes'
 
 const props = defineProps(['searchQuery'])
 const emit = defineEmits(['reportSelected'])
 
-const reportItems = [
-  { icon: dangerIcon, label: 'Incêndio' },
-  { icon: femenineIcon, label: 'Violência doméstica' },
-  { icon: robberIcon, label: 'Assalto' },
-  { icon: accidentIcon, label: 'Acidente de trânsito' },
-  { icon: disasterIcon, label: 'Árvore caída' },
-  { icon: pawprintIcon, label: 'Animal perdido' }
-]
-
-const filteredItems = ref([])
-
 const cleanSearch = (str) =>
   str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 
-const filterItems = () => {
-  if (!props.searchQuery) {
-    filteredItems.value = reportItems
-    return
-  }
+const filteredItems = computed(() => {
+  if (!props.searchQuery) return reportTypes
+
   const cleanedQuery = cleanSearch(props.searchQuery)
-  filteredItems.value = reportItems.filter(item =>
+  return reportTypes.filter(item =>
     cleanSearch(item.label).includes(cleanedQuery)
   )
-}
-
-watch(() => props.searchQuery, (newVal) => {
-  filterItems()
-}, { immediate: true })
+})
 </script>
 
 <style lang="scss" scoped>

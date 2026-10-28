@@ -4,7 +4,7 @@
     <div class="header">
         <Menu/>
         <div class="info">
-            <h2>Olá, {{ userFirstName }}!</h2>
+            <h2>Olá, {{ userStore.firstName }}!</h2>
             <p>O que você quer denunciar?</p>
             <div class="warning">
               <p class="warning-info">Em caso de emergência, aperte no botão vermelho.</p>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useUserStore } from '@/stores/UserStore';
 import { useRouter } from 'vue-router';
 import ReportTypeSearch from '@/components/ReportTypeSearch.vue';
@@ -33,10 +33,6 @@ const userStore = useUserStore();
 const router = useRouter();
 
 const searchQuery = ref('')
-
-const userFirstName = computed(() => {
-    return userStore.user.Name ? userStore.user.Name.split(' ')[0] : 'Usuário';
-});
 
 const newReport = (reportType) => {
   router.push({

@@ -72,7 +72,7 @@
 							@mouseover="imgHoverIndex = index"
 							@mouseleave="imgHoverIndex = null"
 						>
-							<img :src="image" alt="Imagem do produto" />
+							<img :src="image" :alt="`Imagem anexada ${index + 1}`" />
 							<button
 								class="remove"
 								@click.prevent="removeImage(index)"
@@ -100,7 +100,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref } from 'vue';
 import { useHandleImages } from '@/composables/handleImages';
 import { useCepAutofill } from '@/composables/cepAutofill';
 import { useUserStore } from '@/stores/UserStore';
@@ -108,7 +108,6 @@ import { useForm, useField } from 'vee-validate';
 import { supabase } from '@/lib/supabaseClient';
 import { useAlertStore } from '@/stores/alertStore';
 import { useRouter } from 'vue-router';
-import Menu from '@/components/Menu.vue';
 import CustomSelect from '@/components/CustomSelect.vue'
 import * as yup from 'yup';
 
