@@ -204,6 +204,35 @@ export const useUserStore = defineStore('user', () => {
         }
     };
 
+    // Supabase emails a link to /reset-password that signs the user in
+    // (recovery session), where they choose the new password
+    const requestPasswordReset = async (email) => {
+        alertStore.clearNotifications();
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password`
+        });
+
+        if (error) {
+            alertStore.addGlobalError('Erro ao enviar o email. Tente novamente em alguns minutos.');
+            throw error;
+        }
+    };
+
+    const updatePassword = async (password) => {
+        alertStore.clearNotifications();
+        const { error } = await supabase.auth.updateUser({ password });
+
+        if (error) {
+            // Supabase refuses a new password equal to the current one
+            const message = error.code === 'same_password'
+                ? 'A nova senha precisa ser diferente da atual.'
+                : 'Erro ao atualizar a senha. Peça um novo link e tente de novo.';
+            alertStore.addGlobalError(message);
+            throw error;
+        }
+        alertStore.addGlobalSuccess('Senha atualizada com sucesso.');
+    };
+
     const logout = async () => {
         alertStore.clearNotifications();
         try {
@@ -227,6 +256,8 @@ export const useUserStore = defineStore('user', () => {
         login,
         register,
         updateUser,
+        requestPasswordReset,
+        updatePassword,
         logout
     };
 });

@@ -16,6 +16,7 @@
           <input type="password" id="password" placeholder="Digite sua senha" v-model="password" @blur="validateField('password')">
           <FieldNotifications field="password"/>
         </div>
+        <router-link to="/forgot-password" class="link forgot">Esqueceu a senha?</router-link>
         <div class="btn-flex">
           <button type="submit" class="btn primary">Entrar</button>
           <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
@@ -124,6 +125,12 @@ const goBack = useGoBack({ name: 'welcome' });
     form {
       width: 100%;
       max-width: 400px;
+
+      .forgot {
+        display: block;
+        text-align: right;
+        margin: -10px 0 20px;
+      }
 
       .btn-flex {
         display: flex;

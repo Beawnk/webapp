@@ -19,6 +19,19 @@ const router = createRouter({
       meta: { guestOnly: true }
     },
     {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('@/views/ForgotPasswordView.vue'),
+      meta: { guestOnly: true }
+    },
+    {
+      // Opened from the recovery email, which signs the user in: neither guest-only
+      // nor requiresAuth, the view itself handles an invalid/expired link
+      path: '/reset-password',
+      name: 'reset-password',
+      component: () => import('@/views/ResetPasswordView.vue')
+    },
+    {
       path: '/register',
       name: 'register',
       component: () => import('@/views/UserDataView.vue'),
