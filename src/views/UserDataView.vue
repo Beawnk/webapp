@@ -2,8 +2,8 @@
     <section class="register">
         <div class="gradient"></div>
         <div class="header">
-          <Menu v-if="userStore.logged === true" />
-          <h2 v-if="userStore.page === 'register' || userStore.logged === false">Cadastro</h2>
+          <Menu v-if="!isRegister" />
+          <h2 v-if="isRegister">Cadastro</h2>
           <h2 v-else>Seus dados</h2>
         </div>
         <div class="form-register">
@@ -18,14 +18,14 @@
               <input type="email" id="email" placeholder="Digite seu email" v-model="email" @blur="validateField('email')">
               <FieldNotifications field="email"/>
             </div>
-            <div class="input-group" v-if="userStore.page === 'register' || userStore.logged === false">
+            <div class="input-group" v-if="isRegister">
               <label for="password">Senha</label>
               <input type="password" id="password" placeholder="Digite sua senha" v-model="password" @blur="validateField('password')" >
               <FieldNotifications field="password"/>
             </div>
             <div class="input-group">
               <label for="birthdate">Data de nascimento</label>
-              <input type="date" id="birthdate" placeholder="Digite sua senha" v-model="birthdate" @blur="validateField('birthdate')" :disabled="userStore.page !== 'register' && userStore.logged === true">
+              <input type="date" id="birthdate" placeholder="Digite sua senha" v-model="birthdate" @blur="validateField('birthdate')" :disabled="!isRegister">
               <FieldNotifications field="birthdate"/>
             </div>
             <div class="input-group">
@@ -67,7 +67,7 @@
                 <FieldNotifications field="state"/>
             </div>
             <div class="btn-flex">
-              <button type="submit" class="btn primary" v-if="userStore.page === 'register' || userStore.logged === false">Cadastrar</button>
+              <button type="submit" class="btn primary" v-if="isRegister">Cadastrar</button>
               <button type="submit" class="btn primary" v-else>Atualizar</button>
               <button class="btn secondary back-btn" @click.prevent="$router.go(-1)">Voltar</button>
             </div>
@@ -77,31 +77,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useForm, useField } from 'vee-validate';
 import { getUserSchema } from '@/composables/userSchema';
 import { useAlertStore } from '@/stores/alertStore';
 import { useUserStore } from '@/stores/UserStore';
 import { useCepAutofill } from '@/composables/cepAutofill';
 
+// 'register' (/register, logged out) or 'profile' (/profile, logged in)
+const props = defineProps({
+  mode: { type: String, required: true }
+});
+
 const userStore = useUserStore();
 const alertStore = useAlertStore();
+const router = useRouter();
 
-// const email = ref('');
-// const password = ref('');
-// const name = ref('');
-// const birthdate = ref('');
-// const phone = ref('');
-// const zip_code = ref('');
-// const street = ref('');
-// const number = ref('');
-// const district = ref('');
-// const city = ref('');
-// const state = ref('');
+const isRegister = computed(() => props.mode === 'register');
 
 // Initialize form with validation schema
 const { handleSubmit } = useForm({
-  validationSchema: computed(() => getUserSchema(userStore.logged)),
+  validationSchema: computed(() => getUserSchema(!isRegister.value)),
   validateOnMount: false,
 });
 
@@ -191,8 +188,9 @@ const updateUserStore = handleSubmit(async (values) => {
     userStore.user.City = values.city;
     userStore.user.State = values.state;
 
-    if (userStore.page === 'register' || userStore.logged === false) {
+    if (isRegister.value) {
       await userStore.register(values.email, values.password);
+      router.push({ name: 'dashboard' });
     } else {
       await userStore.updateUser();
     }
@@ -203,7 +201,7 @@ const updateUserStore = handleSubmit(async (values) => {
 });
 
 onMounted(() => {
-  if (userStore.page === 'register' || userStore.logged === false) {
+  if (isRegister.value) {
     name.value = '';
     email.value = '';
     birthdate.value = '';

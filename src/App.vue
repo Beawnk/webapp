@@ -11,16 +11,23 @@
 
 <script setup>
 import { SpeedInsights } from '@vercel/speed-insights/vue'; 
-import { onMounted, watch } from 'vue';
+import { watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/UserStore';
 import Notifications from '@/components/Notifications.vue';
 import { useAlertStore } from '@/stores/alertStore';
 
 const alertStore = useAlertStore();
 const userStore = useUserStore();
+const route = useRoute();
+const router = useRouter();
 
-onMounted(() => {
-  userStore.loadUserFromLocalStorage();
+// Leave private pages as soon as the session ends (logout, expired session,
+// logout in another tab); the router guard only runs on navigation
+watch(() => userStore.logged, (logged) => {
+  if (!logged && route.meta.requiresAuth) {
+    router.push({ name: 'welcome' });
+  }
 });
 </script>
 

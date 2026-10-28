@@ -26,13 +26,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
 import { useForm, useField } from 'vee-validate';
 import { useUserStore } from '@/stores/UserStore';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import * as yup from 'yup';
 
 const userStore = useUserStore();
+const route = useRoute();
 const router = useRouter();
 
 const loginSchema = yup.object({
@@ -68,14 +68,15 @@ const login = handleSubmit(async (values) => {
     await userStore.login(values.email, values.password);
   } catch (error) {
     console.error('Login failed:', error);
+    return;
   }
-});
 
-onMounted(() => {
-  if (userStore.logged) {
-    router.push('/dashboard')
-  }
-})
+  // Back to the private page that sent the user here. Only same-app paths:
+  // "//host" would be read as another site
+  const redirect = route.query.redirect;
+  const isAppPath = typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//');
+  router.push(isAppPath ? redirect : { name: 'dashboard' });
+});
 </script>
 
 <style lang="scss" scoped>

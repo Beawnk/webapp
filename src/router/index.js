@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Welcome from '../views/WelcomeView.vue'
+import { useUserStore } from '@/stores/UserStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,46 +8,81 @@ const router = createRouter({
     {
       path: '/',
       name: 'welcome',
-      component: Welcome
+      component: Welcome,
+      meta: { guestOnly: true }
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/LoginView.vue')
+      component: () => import('@/views/LoginView.vue'),
+      meta: { guestOnly: true }
     },
     {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/UserDataView.vue'),
+      props: { mode: 'register' },
+      meta: { guestOnly: true }
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/UserDataView.vue'),
+      props: { mode: 'profile' },
+      meta: { requiresAuth: true }
+    },
+    {
+      // Old URL of the register/profile screen
       path: '/user-data',
-      name: 'user-data',
-      component: () => import('@/views/UserDataView.vue')
+      redirect: { name: 'profile' }
     },
     {
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('@/views/DashboardView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/new-report/:type',
       name: 'new-report',
       component: () => import('@/views/NewReportView.vue'),
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/reports',
       name: 'reports',
-      component: () => import('@/views/ReportsView.vue')
+      component: () => import('@/views/ReportsView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/report/:id',
       name: 'report',
       component: () => import('@/views/ReportView.vue'),
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/emergency',
       name: 'emergency',
-      component: () => import('@/views/EmergencyView.vue')
+      component: () => import('@/views/EmergencyView.vue'),
+      meta: { requiresAuth: true }
     }
   ]
+})
+
+router.beforeEach(async (to) => {
+  const userStore = useUserStore()
+  // Wait for the stored Supabase session to be restored, otherwise a reload
+  // on a private page would always bounce to the login
+  await userStore.ready
+
+  if (to.meta.requiresAuth && !userStore.logged) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+  if (to.meta.guestOnly && userStore.logged) {
+    return { name: 'dashboard' }
+  }
 })
 
 export default router

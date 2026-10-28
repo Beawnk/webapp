@@ -1,49 +1,83 @@
 import { defineStore } from 'pinia';
 import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
 import { supabase } from '@/lib/supabaseClient';
 import { useAlertStore } from '@/stores/alertStore';
 
+const emptyUser = () => ({
+    id: '',
+    Name: '',
+    Email: '',
+    Birthdate: '',
+    Phone: '',
+    Zip_code: '',
+    Street: '',
+    Number: '',
+    District: '',
+    City: '',
+    State: '',
+});
+
+// The Supabase session is the only source of truth for "logged in":
+// supabase-js persists and refreshes it, so the store just mirrors it
 export const useUserStore = defineStore('user', () => {
-    const router = useRouter();
     const alertStore = useAlertStore();
 
     const logged = ref(false);
+    const user = reactive(emptyUser());
 
-    const user = reactive({
-        id: '',
-        Name: '',
-        Email: '',
-        Birthdate: '',
-        Phone: '',
-        Zip_code: '',
-        Street: '',
-        Number: '',
-        District: '',
-        City: '',
-        State: '',
-    });
+    const resetUser = () => {
+        Object.assign(user, emptyUser());
+        logged.value = false;
+    };
 
-    const page = ref('');
+    const loadProfile = async (authUser) => {
+        const { data: customUser, error } = await supabase
+            .from('Users')
+            .select('*')
+            .eq('id', authUser.id)
+            .single();
 
-    const loadUserFromLocalStorage = () => {
-        const storedUser = localStorage.getItem('user');
-        const isLogged = localStorage.getItem('logged') === 'true';
-        if (storedUser && isLogged) {
-            Object.assign(user, JSON.parse(storedUser));
-            logged.value = true;
+        if (error) throw new Error('Erro ao carregar informações do usuário.');
+
+        Object.assign(user, {
+            id: customUser.id,
+            Name: customUser.Name,
+            // The auth email is the source of truth: Users.Email can lag
+            // behind after an email change is confirmed
+            Email: authUser.email,
+            Birthdate: customUser.Birthdate || '',
+            Phone: customUser.Phone || '',
+            Street: customUser.Street || '',
+            Number: customUser.Number || '',
+            District: customUser.District || '',
+            City: customUser.City || '',
+            State: customUser.State || '',
+            Zip_code: customUser.Zip_code || ''
+        });
+        logged.value = true;
+    };
+
+    const init = async () => {
+        // Older versions kept a copy of the profile here
+        localStorage.removeItem('user');
+        localStorage.removeItem('logged');
+
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) await loadProfile(session.user);
+        } catch (error) {
+            console.error('Error restoring session:', error);
         }
     };
 
-    const saveUserToLocalStorage = () => {
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('logged', logged.value);
-    };
+    // Covers sessions that end outside the app (expired refresh token, logout
+    // in another tab). The callback must not await other Supabase calls.
+    supabase.auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_OUT') resetUser();
+    });
 
-    const clearLocalStorage = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('logged');
-    };
+    // The router guard awaits this before deciding where the user can go
+    const ready = init();
 
     // Every failure below throws an Error with the message meant for the user,
     // and only the catch shows it, so each failure produces a single toast
@@ -63,33 +97,7 @@ export const useUserStore = defineStore('user', () => {
 
             if (error) throw new Error('Email ou senha inválidos.');
 
-            const { data: customUser, error: userError } = await supabase
-                .from('Users')
-                .select('*')
-                .eq('id', data.user.id)
-                .single();
-
-            if (userError) throw new Error('Erro ao carregar informações do usuário.');
-
-            Object.assign(user, {
-                id: customUser.id,
-                Name: customUser.Name,
-                // The auth email is the source of truth: Users.Email can lag
-                // behind after an email change is confirmed
-                Email: data.user.email,
-                Birthdate: customUser.Birthdate || '',
-                Phone: customUser.Phone || '',
-                Street: customUser.Street || '',
-                Number: customUser.Number || '',
-                District: customUser.District || '',
-                City: customUser.City || '',
-                State: customUser.State || '',
-                Zip_code: customUser.Zip_code || ''
-            });
-            logged.value = true;
-            saveUserToLocalStorage();
-
-            router.push({ name: 'dashboard' });
+            await loadProfile(data.user);
             alertStore.addGlobalSuccess('Login efetuado com sucesso.');
         } catch (error) {
             alertStore.addGlobalError(error.message);
@@ -132,15 +140,14 @@ export const useUserStore = defineStore('user', () => {
                 .insert([userData]);
 
             if (insertError) throw new Error('Erro ao salvar informações do usuário.');
+
+            // With email confirmation off, signUp already signed the user in
+            await loadProfile(data.user);
+            alertStore.addGlobalSuccess('Conta criada com sucesso.');
         } catch (error) {
             alertStore.addGlobalError(error.message);
             throw error;
         }
-
-        // Outside the try: login shows its own errors, so catching them here
-        // would show a second toast
-        await login(email, password);
-        alertStore.addGlobalSuccess('Conta criada com sucesso.');
     };
 
     const updateUser = async () => {
@@ -187,8 +194,6 @@ export const useUserStore = defineStore('user', () => {
             if (emailChangeRequested) {
                 alertStore.addGlobalSuccess('Enviamos um link de confirmação para o novo email.');
             }
-
-            saveUserToLocalStorage();
         } catch (error) {
             alertStore.addGlobalError(error.message);
             throw error;
@@ -202,23 +207,7 @@ export const useUserStore = defineStore('user', () => {
             if (error && error.name !== 'AuthSessionMissingError') {
                 throw new Error('Erro ao efetuar logout.');
             }
-            clearLocalStorage();
-            Object.assign(user, {
-                id: '',
-                Name: '',
-                Email: '',
-                Birthdate: '',
-                Phone: '',
-                Zip_code: '',
-                Street: '',
-                Number: '',
-                District: '',
-                City: '',
-                State: ''
-            });
-            logged.value = false;
-            router.push({ name: 'welcome' });
-
+            resetUser();
             alertStore.addGlobalSuccess('Logout efetuado com sucesso.');
         } catch (error) {
             alertStore.addGlobalError(error.message);
@@ -226,14 +215,10 @@ export const useUserStore = defineStore('user', () => {
         }
     };
 
-    loadUserFromLocalStorage();
-
     return {
         logged,
         user,
-        loadUserFromLocalStorage,
-        saveUserToLocalStorage,
-        clearLocalStorage,
+        ready,
         login,
         register,
         updateUser,

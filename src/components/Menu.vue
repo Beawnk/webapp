@@ -15,10 +15,10 @@
                 <h4>IEmergency</h4>
             </div>
             <ul>
-                <li class="profile"><p @click="openProfile">{{ userFirstName }}</p></li>
+                <li class="profile"><router-link to="/profile">{{ userFirstName }}</router-link></li>
                 <li><router-link to="/dashboard">Home</router-link></li>
                 <li><router-link to="/reports">Suas Denúncias</router-link></li>
-                <li><button class="link" @click.prevent="userStore.logout">Sair</button></li>
+                <li><button class="link" @click.prevent="logout">Sair</button></li>
             </ul>
         </div>
     </div>
@@ -28,10 +28,8 @@
 import { ref, computed } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import { useUserStore } from '@/stores/UserStore';
-import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
-const router = useRouter();
 
 const menuOpen = ref(false);
 const menu = ref(null);
@@ -45,9 +43,13 @@ const userFirstName = computed(() => {
     return userStore.user.Name ? userStore.user.Name.split(' ')[0] : 'Usuário';
 });
 
-const openProfile = () => {
-    router.push('/user-data');
-    userStore.page = 'profile';
+// The store already shows the error toast; App.vue leaves the page on success
+const logout = async () => {
+    try {
+        await userStore.logout();
+    } catch (error) {
+        console.error('Logout failed:', error);
+    }
 };
 
 // VueUse removes the listener when the component unmounts
@@ -162,8 +164,7 @@ onClickOutside(menu, () => {
                 border-bottom: 1px solid var(--border-color);
                 color: var(--text-secondary-color);
                 
-                p {
-                    cursor: pointer;
+                a {
                     padding: 20px 15px;
                 }
             }
