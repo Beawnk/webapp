@@ -23,10 +23,10 @@
                   </div>
               </div>
             </div>
-            <div class="report-images" v-if="report.Images && report.Images.length > 0">
+            <div class="report-images" v-if="imageUrls.length > 0">
               <h3>Imagens</h3>
               <div class="images">
-                <img v-for="(image, index) in report.Images" :key="index" :src="image" :alt="`Imagem ${index + 1} da denúncia`" />
+                <img v-for="(image, index) in imageUrls" :key="index" :src="image" :alt="`Imagem ${index + 1} da denúncia`" />
               </div>
             </div>
             <div class="report-location">
@@ -52,9 +52,11 @@ import { ref, onMounted } from 'vue';
 import { supabase } from '@/lib/supabaseClient'; 
 import { useRouter } from 'vue-router';
 import { useAlertStore } from '@/stores/alertStore';
+import { getReportImageUrls, removeReportImages } from '@/lib/reportImages';
 import { useGoBack } from '@/composables/goBack';
 
 const report = ref(null);
+const imageUrls = ref([]);
 const loading = ref(true);
 const deleting = ref(false);
 const router = useRouter();
@@ -77,6 +79,16 @@ const fetchReport = async () => {
     }
     report.value = data;
     loading.value = false;
+
+    // The report text shows first; the images (signed URLs) fill in after
+    if (data?.Images?.length) {
+        try {
+            imageUrls.value = await getReportImageUrls(data.Images);
+        } catch (imageError) {
+            console.error('Erro ao carregar imagens:', imageError);
+            alertStore.addGlobalError('Erro ao carregar as imagens da denúncia.');
+        }
+    }
 };
 
 const deleteReport = async () => {
@@ -98,6 +110,7 @@ const deleteReport = async () => {
         return;
     }
 
+    await removeReportImages(report.value.Images || []);
     alertStore.addGlobalSuccess('Denúncia excluída com sucesso.');
     router.push({ name: 'reports' });
 };

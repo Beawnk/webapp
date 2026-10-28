@@ -68,11 +68,11 @@
 						<div
 							class="image"
 							v-for="(image, index) in images"
-							:key="index"
+							:key="image.preview"
 							@mouseover="imgHoverIndex = index"
 							@mouseleave="imgHoverIndex = null"
 						>
-							<img :src="image" :alt="`Imagem anexada ${index + 1}`" />
+							<img :src="image.preview" :alt="`Imagem anexada ${index + 1}`" />
 							<button
 								type="button"
 								class="remove"
@@ -93,7 +93,7 @@
                     <FieldNotifications field="images"/>
                 </div>
                 <div class="btn-flex">
-                    <button type="submit" class="btn primary">Enviar</button>
+                    <button type="submit" class="btn primary" :disabled="submitting">{{ submitting ? 'Enviando...' : 'Enviar' }}</button>
                     <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
                 </div>
             </form>
@@ -104,12 +104,13 @@
 
 <script setup>
 import { useGoBack } from '@/composables/goBack';
-import { ref } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
 import { useHandleImages } from '@/composables/handleImages';
 import { useCepAutofill } from '@/composables/cepAutofill';
 import { useUserStore } from '@/stores/UserStore';
 import { useForm, useField } from 'vee-validate';
 import { supabase } from '@/lib/supabaseClient';
+import { uploadReportImages, removeReportImages } from '@/lib/reportImages';
 import { useAlertStore } from '@/stores/alertStore';
 import { useRouter } from 'vue-router';
 import CustomSelect from '@/components/CustomSelect.vue'
@@ -156,7 +157,6 @@ const { handleSubmit } = useForm({
     state: '',
     description: '',
     localType: '',
-    images: [],
   },
 });
 
@@ -184,9 +184,10 @@ const { value: description, validate: validateDescription } = useField('descript
 const { value: localType, validate: validateLocalType } = useField('localType', undefined, {
   validateOnValueUpdate: false
 });
-const { value: images } = useField('images', undefined, {
-	validateOnValueUpdate: false
-});
+// Outside vee-validate: it clones form values, and these hold File objects.
+// [{ file, preview }], uploaded to Storage only when the report is sent
+const images = ref([]);
+const submitting = ref(false);
 
 const validateField = (fieldName) => {
   const validateMap = {
@@ -210,16 +211,36 @@ const { fillCep } = useCepAutofill(
   validateField
 );
 
-const onFileChange = async (e) => {
-	images.value = await useHandleImages(images.value, e);
+const onFileChange = (e) => {
+	images.value = useHandleImages(images.value, e);
 };
 
 const removeImage = (index) => {
+	URL.revokeObjectURL(images.value[index].preview);
 	images.value.splice(index, 1);
 };
 
+// Object URLs keep the file in memory until revoked
+onBeforeUnmount(() => {
+	images.value.forEach((image) => URL.revokeObjectURL(image.preview));
+});
+
 const submitReport = handleSubmit(async (values) => {
     alertStore.clearNotifications();
+    submitting.value = true;
+    let imagePaths = [];
+
+    try {
+        imagePaths = await uploadReportImages(
+          userStore.user.id,
+          images.value.map((image) => image.file)
+        );
+    } catch (error) {
+        console.error('Erro ao enviar imagens:', error);
+        alertStore.addGlobalError('Erro ao enviar as imagens. Tente novamente.');
+        submitting.value = false;
+        return;
+    }
 
     const reportData = {
       Type: props.type,
@@ -232,11 +253,11 @@ const submitReport = handleSubmit(async (values) => {
       State: values.state,
       Local_type: values.localType,
       Description: values.description,
-      Images: values.images
+      Images: imagePaths
     };
 
     try {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('Reports')
           .insert([reportData]);
 
@@ -246,7 +267,11 @@ const submitReport = handleSubmit(async (values) => {
         router.push('/reports');
     } catch (error) {
         console.error('Erro ao enviar denúncia:', error);
+        // The report wasn't saved, so its images would be orphans
+        await removeReportImages(imagePaths);
         alertStore.addGlobalError('Erro ao enviar denúncia. Tente novamente mais tarde.');
+    } finally {
+        submitting.value = false;
     }
 });
 

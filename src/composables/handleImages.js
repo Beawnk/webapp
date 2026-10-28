@@ -1,9 +1,12 @@
 import { useAlertStore } from "@/stores/alertStore";
 
 const MAX_IMAGES = 3;
-const MAX_SIZE_MB = 2;
+// Same limit as the report-images bucket (supabase/report-images-storage.sql)
+const MAX_SIZE_MB = 5;
 
-export async function useHandleImages(fileImages, e) {
+// fileImages: [{ file, preview }]. The files are uploaded to Storage on submit;
+// preview is a local object URL for the thumbnail (revoke it when removed)
+export function useHandleImages(fileImages, e) {
   const alertStore = useAlertStore();
   // Only this field's error: clearing everything would also drop the global toasts
   alertStore.clearFieldError("images");
@@ -28,21 +31,12 @@ export async function useHandleImages(fileImages, e) {
       continue; // Skip invalid file
     }
 
-    // Images are saved as base64 inside the report row, so big photos bloat it
     if (file.size > MAX_SIZE_MB * 1024 * 1024) {
       alertStore.setFieldError("images", `Cada imagem pode ter no máximo ${MAX_SIZE_MB} MB.`);
       continue;
     }
 
-    // Read the file as a Data URL using FileReader
-    const fileDataUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => resolve(event.target.result);
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
-
-    validImages.push(fileDataUrl); // Add valid image
+    validImages.push({ file, preview: URL.createObjectURL(file) });
   }
 
   return [...fileImages, ...validImages];
