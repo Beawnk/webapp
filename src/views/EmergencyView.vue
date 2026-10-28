@@ -10,7 +10,7 @@
             <div class="icon">
                 <img src="@/assets/images/icons/warning-red.png" alt="Ícone de emergência" />
             </div>
-            <p>Aperte o botão para simular o envio de uma mensagem de emergência</p>
+            <p>Aperte o botão para registrar um pedido de ajuda e ligar para o serviço certo</p>
         </div>
         <EmergencyBtn/>
         <div class="btn-flex">
