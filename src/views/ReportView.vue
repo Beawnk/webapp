@@ -3,29 +3,32 @@
         <div class="gradient"></div>
         <div class="header">
           <Menu />
-          <h2>{{ report.Type }}</h2>
+          <h2>{{ report ? report.Type : 'Denúncia' }}</h2>
         </div>    
         <div class="content">
-          <div class="info">
-            <h3>Detalhes da Denúncia</h3>
-            <p><strong>Data:</strong> {{ new Date(report.created_at).toLocaleDateString('pt-BR') }}</p>
-            <div class="details">
-                <div class="info-wrap">
-                    <h4>Descrição</h4>
-                    <p>{{ report.Description }}</p>
-                </div>
-                <div class="info-wrap">
-                    <h4>Tipo de Local</h4>
-                    <p>{{ report.Local_type }}</p>
-                </div>
+          <p v-if="loading">Carregando denúncia...</p>
+          <p v-else-if="!report">Denúncia não encontrada.</p>
+          <template v-else>
+            <div class="info">
+              <h3>Detalhes da Denúncia</h3>
+              <p><strong>Data:</strong> {{ new Date(report.created_at).toLocaleDateString('pt-BR') }}</p>
+              <div class="details">
+                  <div class="info-wrap">
+                      <h4>Descrição</h4>
+                      <p>{{ report.Description }}</p>
+                  </div>
+                  <div class="info-wrap">
+                      <h4>Tipo de Local</h4>
+                      <p>{{ report.Local_type }}</p>
+                  </div>
+              </div>
             </div>
-          </div>
-          <div class="report-images" v-if="report.Images && report.Images.length > 0">
-            <h3>Imagens</h3>
-            <div class="images">
-              <img v-for="(image, index) in report.Images" :key="index" :src="image" alt="Imagem da denúncia" />
+            <div class="report-images" v-if="report.Images && report.Images.length > 0">
+              <h3>Imagens</h3>
+              <div class="images">
+                <img v-for="(image, index) in report.Images" :key="index" :src="image" :alt="`Imagem ${index + 1} da denúncia`" />
+              </div>
             </div>
-          </div>
             <div class="report-location">
                 <h3>Localização</h3>
                 <p v-if="report.Zip_code"><strong>CEP:</strong> {{ report.Zip_code }}</p>
@@ -35,9 +38,10 @@
                 <p><strong>Cidade:</strong> {{ report.City }}</p>
                 <p><strong>Estado:</strong> {{ report.State }}</p>
             </div>
+          </template>
             <div class="btn-flex">
-                <button class="btn danger" @click.prevent="deleteReport">Excluir</button>
-                <button class="btn secondary back-btn" @click="$router.go(-1)">Voltar</button>
+                <button v-if="report" type="button" class="btn danger" :disabled="deleting" @click="deleteReport">Excluir</button>
+                <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
             </div>
         </div>
   </section>
@@ -47,43 +51,58 @@
 import { ref, onMounted } from 'vue';
 import { supabase } from '@/lib/supabaseClient'; 
 import { useRouter } from 'vue-router';
+import { useAlertStore } from '@/stores/alertStore';
+import { useGoBack } from '@/composables/goBack';
 
-const report = ref({});
+const report = ref(null);
+const loading = ref(true);
+const deleting = ref(false);
 const router = useRouter();
+const alertStore = useAlertStore();
+const goBack = useGoBack({ name: 'reports' });
 
 const props = defineProps(['id']);
 
 const fetchReport = async () => {
+    // maybeSingle: a report that doesn't exist (or isn't the user's, by RLS) is null, not an error
     const { data, error } = await supabase
         .from('Reports')
         .select('*')
         .eq('id', props.id)
-        .single();
+        .maybeSingle();
 
     if (error) {
         console.error('Erro ao buscar denúncia:', error);
-    } else {
-        report.value = data;
+        alertStore.addGlobalError('Erro ao carregar a denúncia.');
     }
+    report.value = data;
+    loading.value = false;
 };
 
 const deleteReport = async () => {
-    const { error } = await supabase
+    if (!window.confirm('Excluir esta denúncia? Essa ação não pode ser desfeita.')) return;
+
+    deleting.value = true;
+    // select() returns the deleted rows: RLS makes a delete on someone else's
+    // report match nothing instead of failing, so an empty list means not deleted
+    const { data, error } = await supabase
         .from('Reports')
         .delete()
-        .eq('id', props.id);
+        .eq('id', props.id)
+        .select('id');
+    deleting.value = false;
 
-    if (error) {
+    if (error || !data.length) {
         console.error('Erro ao excluir denúncia:', error);
-    } else {
-        alert('Denúncia excluída com sucesso!');
-        router.push('/reports');
+        alertStore.addGlobalError('Não foi possível excluir a denúncia.');
+        return;
     }
+
+    alertStore.addGlobalSuccess('Denúncia excluída com sucesso.');
+    router.push({ name: 'reports' });
 };
 
-onMounted(async () => {
-    await fetchReport();
-});
+onMounted(fetchReport);
 </script>
 
 <style lang="scss" scoped>

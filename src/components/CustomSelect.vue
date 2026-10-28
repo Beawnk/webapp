@@ -1,12 +1,26 @@
 <template>
-  <div class="custom-select">
+  <!-- The root is the focusable element, so a @blur passed by the parent
+       (falls through as a native listener) fires when focus leaves the select -->
+  <div
+    class="custom-select"
+    ref="root"
+    tabindex="0"
+    role="combobox"
+    aria-haspopup="listbox"
+    :aria-expanded="isOpen"
+    :aria-activedescendant="isOpen && activeIndex >= 0 ? optionId(activeIndex) : undefined"
+    @keydown="onKeydown"
+  >
     <div class="select-wrapper" :class="{ open: isOpen }" @click="toggleOpen">
       <span class="selected">{{ selectedLabel }}</span>
-      <ul v-if="isOpen" class="options">
+      <ul v-if="isOpen" class="options" role="listbox">
         <li
-          v-for="option in options"
+          v-for="(option, index) in options"
+          :id="optionId(index)"
           :key="option.value"
-          :class="{ selected: option.value === modelValue }"
+          role="option"
+          :aria-selected="option.value === modelValue"
+          :class="{ selected: option.value === modelValue, active: index === activeIndex }"
           @click.stop="select(option.value)"
         >
           {{ option.label }}
@@ -17,7 +31,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, useId } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 
 const props = defineProps({
   modelValue: [String, Number, Boolean],
@@ -26,28 +41,65 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
+const root = ref(null)
 const isOpen = ref(false)
+// Option highlighted by the arrow keys
+const activeIndex = ref(-1)
+const uid = useId()
+const optionId = (index) => `${uid}-option-${index}`
+
 const selectedLabel = computed(() => {
   const found = props.options.find(opt => opt.value === props.modelValue)
   return found ? found.label : 'Selecione...'
 })
 
+function open() {
+  isOpen.value = true
+  const selectedIndex = props.options.findIndex(opt => opt.value === props.modelValue)
+  activeIndex.value = Math.max(selectedIndex, 0)
+}
+function close() {
+  isOpen.value = false
+}
 function toggleOpen() {
-  isOpen.value = !isOpen.value
+  isOpen.value ? close() : open()
 }
 function select(value) {
   emit('update:modelValue', value)
-  isOpen.value = false
+  close()
 }
 
-// Optional: close on outside click
-function onClickOutside(e) {
-  if (!e.target.closest('.custom-select')) isOpen.value = false
+function onKeydown(e) {
+  if (!isOpen.value) {
+    if (['Enter', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+      e.preventDefault()
+      open()
+    }
+    return
+  }
+
+  switch (e.key) {
+    case 'ArrowDown':
+      e.preventDefault()
+      activeIndex.value = Math.min(activeIndex.value + 1, props.options.length - 1)
+      break
+    case 'ArrowUp':
+      e.preventDefault()
+      activeIndex.value = Math.max(activeIndex.value - 1, 0)
+      break
+    case 'Enter':
+    case ' ':
+      e.preventDefault()
+      select(props.options[activeIndex.value].value)
+      break
+    case 'Escape':
+    case 'Tab':
+      close()
+      break
+  }
 }
-watch(isOpen, open => {
-  if (open) window.addEventListener('click', onClickOutside)
-  else window.removeEventListener('click', onClickOutside)
-})
+
+onClickOutside(root, close)
 </script>
 
 <style lang="scss" scoped>
@@ -110,6 +162,7 @@ watch(isOpen, open => {
     cursor: pointer;
 }
 .options li.selected,
+.options li.active,
 .options li:hover {
   background: var(--btn-report-color);
   color: var(--white-color);

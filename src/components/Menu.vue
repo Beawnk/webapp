@@ -1,6 +1,6 @@
 <template>
     <div class="menu-btn" ref="menuBtn">
-		<button @click.prevent="toggleMenu">
+		<button type="button" aria-label="Abrir menu" :aria-expanded="menuOpen" @click.prevent="toggleMenu">
 			<span></span>
        		<span></span>
        		<span></span>

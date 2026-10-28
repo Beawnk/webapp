@@ -7,9 +7,9 @@
         </div>
         <div class="content">
             <div class="reports-list">
-                <div class="report-item" v-for="report in reports" :key="report.id" @click="$router.push({ name: 'report', params: { id: report.id } })">
+                <router-link class="report-item" v-for="report in reports" :key="report.id" :to="{ name: 'report', params: { id: report.id } }">
                     <div class="report-icon">
-                        <img :src="report.icon" alt="Ícone da denúncia" />
+                        <img :src="report.icon" alt="" />
                     </div>
                     <div class="info-wrap">
                         <div class="info">
@@ -18,9 +18,9 @@
                         </div>
                         <p>{{ truncatedText(report.Description, 100, '...') }}</p>
                     </div>
-                </div>
+                </router-link>
             </div>
-            <div class="empty-state" v-if="reports.length === 0">
+            <div class="empty-state" v-if="!loading && reports.length === 0">
                 <h3>Nenhuma denúncia registrada</h3>
                 <p>Você ainda não fez nenhuma denúncia.</p>
             </div>
@@ -36,6 +36,8 @@ import { getReportIcon } from '@/constants/reportTypes';
 
 const userStore = useUserStore();
 const reports = ref([]);
+// Avoids flashing the empty state before the first fetch returns
+const loading = ref(true);
 
 const fetchReports = async () => {
     // Only what the list shows: select('*') would also download every report's images
@@ -54,6 +56,7 @@ const fetchReports = async () => {
         icon: getReportIcon(report.Type)
       }));
     }
+    loading.value = false;
 };
 
 const truncatedText = (string, letters, end = '') => {

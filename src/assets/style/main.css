@@ -82,7 +82,7 @@ body:has(.modal.open) {
 
 /* Typography */
 h1, h2, h3 {
-    font-family: var(--font-family-semiBold);
+    font-family: var(--font-family-semibold);
     margin: 0;
     font-weight: normal;
 }
@@ -136,7 +136,7 @@ a {
 }
 
 strong {
-    font-family: var(--font-family-semiBold);
+    font-family: var(--font-family-semibold);
     font-weight: normal;
 }
 
@@ -162,6 +162,14 @@ button {
     padding: 0;
     transition: var(--transition);
     font-family: var(--font-family);
+}
+
+/* outline: none above hides focus for mouse clicks; keyboard users still need to see it */
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
 }
 
 #app {

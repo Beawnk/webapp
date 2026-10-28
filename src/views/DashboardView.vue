@@ -8,7 +8,7 @@
             <p>O que você quer denunciar?</p>
             <div class="warning">
               <p class="warning-info">Em caso de emergência, aperte no botão vermelho.</p>
-              <button class="warning-btn" @click.prevent="$router.push('/emergency')"></button>
+              <button type="button" class="warning-btn" aria-label="Ir para a tela de emergência" @click.prevent="$router.push('/emergency')"></button>
             </div>
         </div>
     </div>

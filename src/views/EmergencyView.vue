@@ -10,12 +10,12 @@
             <div class="icon">
                 <img src="@/assets/images/icons/warning-red.png" alt="Ícone de emergência" />
             </div>
-            <p>Aperte o botão para enviar uma mensagem de emergência</p>
+            <p>Aperte o botão para simular o envio de uma mensagem de emergência</p>
         </div>
         <EmergencyBtn/>
         <div class="btn-flex">
-            <button class="btn secondary back-btn" @click="$router.go(-1)">Voltar</button>
-            <button class="btn secondary numbers" @click.prevent="openNumbers = !openNumbers">Números de emergência</button>
+            <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
+            <button type="button" class="btn secondary numbers" :aria-expanded="openNumbers" @click.prevent="openNumbers = !openNumbers">Números de emergência</button>
         </div>
         <EmergencyNumbers :class="{ open: openNumbers }" @close="openNumbers = false"/>
     </div>
@@ -23,11 +23,14 @@
 </template>
 
 <script setup>
+import { useGoBack } from '@/composables/goBack';
 import { ref } from 'vue';
 import EmergencyNumbers from '@/components/EmergencyNumbers.vue';
 import EmergencyBtn from '@/components/EmergencyBtn.vue';
 
 const openNumbers = ref(false);
+
+const goBack = useGoBack({ name: 'dashboard' });
 </script>
 
 <style lang="scss" scoped>

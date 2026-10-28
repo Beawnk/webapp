@@ -1,11 +1,11 @@
 <template>
   <div class="cards">
-        <div class="card" v-for="item in filteredItems" :key="item.label" @click="$emit('reportSelected', item.label)">
+        <button type="button" class="card" v-for="item in filteredItems" :key="item.label" @click="$emit('reportSelected', item.label)">
           <div class="icon">
             <img :src="item.icon" alt="">
           </div>
           <p>{{ item.label }}</p>
-        </div>
+        </button>
     </div>
 </template>
 
@@ -38,6 +38,8 @@ const filteredItems = computed(() => {
     .card {
         background-color: var(--white-color);
         cursor: pointer;
+        width: 100%;
+        text-align: left;
         border-radius: 20px;
         padding: 15px;
         display: flex;

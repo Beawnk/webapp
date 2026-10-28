@@ -18,7 +18,7 @@
         </div>
         <div class="btn-flex">
           <button type="submit" class="btn primary">Entrar</button>
-          <button class="btn secondary back-btn" @click.prevent="$router.go(-1)">Voltar</button>
+          <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
         </div>
       </form>
     </div>
@@ -26,6 +26,7 @@
 </template>
 
 <script setup>
+import { useGoBack } from '@/composables/goBack';
 import { useForm, useField } from 'vee-validate';
 import { useUserStore } from '@/stores/UserStore';
 import { useRoute, useRouter } from 'vue-router';
@@ -77,6 +78,8 @@ const login = handleSubmit(async (values) => {
   const isAppPath = typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//');
   router.push(isAppPath ? redirect : { name: 'dashboard' });
 });
+
+const goBack = useGoBack({ name: 'welcome' });
 </script>
 
 <style lang="scss" scoped>

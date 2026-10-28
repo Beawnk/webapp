@@ -1,12 +1,12 @@
 <template>
-	<div class="alert-container">
+	<div class="alert-container" aria-live="polite">
 		<transition name="alert" mode="out-in">
 	  		<div v-if="successes.length" class="success alert">
 				<p v-for="success in successes" :key="success.id">{{ success.text }}</p>
 	  		</div>
 		</transition>
 		<transition name="alert" mode="out-in">
-	  		<div v-if="errors.length" class="error alert">
+	  		<div v-if="errors.length" class="error alert" role="alert">
 				<p v-for="error in errors" :key="error.id">{{ error.text }}</p>
 	  		</div>
 		</transition>

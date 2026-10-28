@@ -69,7 +69,7 @@
             <div class="btn-flex">
               <button type="submit" class="btn primary" v-if="isRegister">Cadastrar</button>
               <button type="submit" class="btn primary" v-else>Atualizar</button>
-              <button class="btn secondary back-btn" @click.prevent="$router.go(-1)">Voltar</button>
+              <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
             </div>
           </form>
         </div>
@@ -77,6 +77,7 @@
 </template>
 
 <script setup>
+import { useGoBack } from '@/composables/goBack';
 import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useForm, useField } from 'vee-validate';
@@ -95,6 +96,7 @@ const alertStore = useAlertStore();
 const router = useRouter();
 
 const isRegister = computed(() => props.mode === 'register');
+const goBack = useGoBack(isRegister.value ? { name: 'welcome' } : { name: 'dashboard' });
 
 // Initialize form with validation schema
 const { handleSubmit } = useForm({

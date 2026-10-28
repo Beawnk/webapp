@@ -1,6 +1,7 @@
 <template>
     <main>
-        <Notifications v-if="alertStore.globalErrors.length || alertStore.globalSuccesses.length"
+        <!-- Always rendered: a live region only announces changes if it already exists -->
+        <Notifications
           :errors="alertStore.globalErrors" 
           :successes="alertStore.globalSuccesses" 
         />

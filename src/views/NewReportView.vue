@@ -44,8 +44,8 @@
                     <FieldNotifications field="state"/>
                 </div>
                 <div class="input-group">
-                    <label for="local-type">Tipo de local</label>
-                    <CustomSelect @blur="validateField('localType')"
+                    <label id="local-type-label">Tipo de local</label>
+                    <CustomSelect @blur="validateField('localType')" aria-labelledby="local-type-label"
                       v-model="localType"
                       :options="[
                         { label: 'Residencial', value: 'Residencial' },
@@ -74,14 +74,17 @@
 						>
 							<img :src="image" :alt="`Imagem anexada ${index + 1}`" />
 							<button
+								type="button"
 								class="remove"
+								:aria-label="`Remover imagem ${index + 1}`"
 								@click.prevent="removeImage(index)"
 							></button>
 						</div>
 						<div class="input-image" v-show="images.length < 3">
 							<input
 								type="file"
-								id="image"
+								id="images"
+								accept="image/png, image/jpeg"
 								@change="onFileChange"
 								multiple
 							/>
@@ -91,7 +94,7 @@
                 </div>
                 <div class="btn-flex">
                     <button type="submit" class="btn primary">Enviar</button>
-                    <button class="btn secondary back-btn" @click.prevent="$router.go(-1)">Voltar</button>
+                    <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
                 </div>
             </form>
         </div>
@@ -100,6 +103,7 @@
 </template>
 
 <script setup>
+import { useGoBack } from '@/composables/goBack';
 import { ref } from 'vue';
 import { useHandleImages } from '@/composables/handleImages';
 import { useCepAutofill } from '@/composables/cepAutofill';
@@ -245,6 +249,8 @@ const submitReport = handleSubmit(async (values) => {
         alertStore.addGlobalError('Erro ao enviar denúncia. Tente novamente mais tarde.');
     }
 });
+
+const goBack = useGoBack({ name: 'dashboard' });
 </script>
 
 <style lang="scss" scoped>

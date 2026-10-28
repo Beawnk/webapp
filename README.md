@@ -34,4 +34,5 @@ O workflow `.github/workflows/keep-supabase-alive.yml` faz uma leitura no banco 
 - Guardar as imagens no Supabase Storage em vez de base64 dentro da linha de `Reports`.
 - Criar o perfil em `Users` por um trigger em `auth.users` (necessário se a confirmação de email for ligada).
 - Envio real do pedido de ajuda.
+- Recuperação de senha (`resetPasswordForEmail` + tela para definir a nova senha).
 - ESLint + Prettier.

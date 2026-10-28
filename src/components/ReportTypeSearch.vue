@@ -1,8 +1,8 @@
 <template>
     <div class="search">
-        <input type="text" id="search" name="search" v-model="searchQuery" placeholder="Pesquisar por tipo de denúncia..." @input="searchReportType" @keyup.enter.prevent="searchReportType">
-        <input class="search-btn" type="submit" @click.prevent="searchReportType" @keyup.enter.prevent="searchReportType" value=""/>
-        <button class="clear" @click="clearSearch" v-show="searchQuery"></button>
+        <input type="text" id="search" name="search" aria-label="Pesquisar por tipo de denúncia" v-model="searchQuery" placeholder="Pesquisar por tipo de denúncia..." @input="searchReportType" @keyup.enter.prevent="searchReportType">
+        <button type="button" class="search-btn" aria-label="Pesquisar" @click="searchReportType"></button>
+        <button type="button" class="clear" aria-label="Limpar pesquisa" @click="clearSearch" v-show="searchQuery"></button>
     </div>
 </template>
 
@@ -52,6 +52,7 @@ const searchReportType = () => {
         background-size: 20px;
         opacity: 0.5;
         border: none;
+        background-color: transparent;
     }
     .clear {
         width: 10px;

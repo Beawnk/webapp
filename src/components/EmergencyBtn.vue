@@ -1,56 +1,42 @@
 <template>
     <div class="emergency-btn">
-        <button class="emergency" @click.prevent="openForm = true">Chamar Ajuda</button>
+        <button type="button" class="emergency" @click.prevent="openForm = true">Chamar Ajuda</button>
     </div>
     <div class="emergency-form" :class="{ open: openForm }">
-        <div class="container" ref="formContainer">
-            <h2>Chamar ajuda</h2>
-            <form class="" @submit.prevent="sendEmergency">
+        <div class="container" ref="formContainer" role="dialog" aria-modal="true" aria-labelledby="emergency-form-title">
+            <h2 id="emergency-form-title">Chamar ajuda</h2>
+            <p class="demo-notice">
+                Modo demonstração: nada é enviado de verdade.
+                Em uma emergência real, ligue <a href="tel:190">190</a>, <a href="tel:192">192</a> ou <a href="tel:193">193</a>.
+            </p>
+            <form @submit.prevent="sendEmergency">
                 <div class="input-group">
-                    <label for="local">Sua localização atual</label>
-                    <div class="input-group">
-                        <input
+                    <label for="address">Sua localização atual</label>
+                    <input
                         id="address"
+                        class="address"
                         type="text"
                         v-model="userAddress"
                         placeholder="Digite o endereço..."
-                        @keyup="onAddressInput"
+                        @input="onAddressInput"
                         autocomplete="off"
-                        style="margin-bottom: 10px; width: 100%; border-radius: 8px; padding: 8px;"
-                        />
-                    </div>
-                    <div id="map" style="height: 200px;"></div>
+                    />
+                    <div class="map" ref="mapEl"></div>
                 </div>
                 <div class="input-group">
                     <label for="message">Mensagem (opcional)</label>
-                    <textarea id="message" rows="3" placeholder="Descreva sua situação..."></textarea>
+                    <textarea id="message" rows="3" placeholder="Descreva sua situação..." v-model="message"></textarea>
                 </div>
-                <div class="input-group">
-                    <label for="send-to">Mandar para:</label>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="police" value="police" v-model="checked">
-                        <label for="police">Polícia Militar</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="ambulance" value="ambulance" v-model="checked">
-                        <label for="ambulance">Ambulância</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="fire" value="fire" v-model="checked">
-                        <label for="fire">Corpo de Bombeiros</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="samu" value="samu" v-model="checked">
-                        <label for="samu">SAMU</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="emergency-contacts" value="emergency-contacts" v-model="checked" checked>
-                        <label for="emergency-contacts">Contatos de emergência</label>
+                <div class="input-group" role="group" aria-labelledby="send-to-label">
+                    <label id="send-to-label">Mandar para:</label>
+                    <div class="checkbox-group" v-for="recipient in recipients" :key="recipient.value">
+                        <input type="checkbox" :id="recipient.value" :value="recipient.value" v-model="checked">
+                        <label :for="recipient.value">{{ recipient.label }}</label>
                     </div>
                 </div>
                 <div class="btn-flex">
                     <button type="button" class="btn secondary" @click="openForm = false">Cancelar</button>
-                    <button type="submit" class="btn primary">Enviar</button>
+                    <button type="submit" class="btn primary">Enviar (simulação)</button>
                 </div>
             </form>
         </div>
@@ -58,16 +44,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { onClickOutside } from '@vueuse/core'
 import { useAlertStore } from "@/stores/alertStore";
+import { useGoogleMaps } from '@/composables/googleMaps';
 
 const alertStore = useAlertStore();
 const openForm = ref(false);
 const formContainer = ref(null);
+const mapEl = ref(null);
 const userLocation = ref({ lat: null, lng: null });
 const userAddress = ref('');
+const message = ref('');
 const checked = ref(['emergency-contacts']);
+
+const recipients = [
+    { value: 'police', label: 'Polícia Militar' },
+    { value: 'ambulance', label: 'Ambulância' },
+    { value: 'fire', label: 'Corpo de Bombeiros' },
+    { value: 'samu', label: 'SAMU' },
+    { value: 'emergency-contacts', label: 'Contatos de emergência' }
+];
 
 let map = null;
 let marker = null;
@@ -82,7 +79,7 @@ const minimalStyle = [
 ];
 
 const getAddressFromCoords = (lat, lng) => {
-    if (!geocoder) geocoder = new window.google.maps.Geocoder();
+    if (!geocoder) return;
     geocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status === 'OK' && results[0]) {
             userAddress.value = results[0].formatted_address;
@@ -93,7 +90,7 @@ const getAddressFromCoords = (lat, lng) => {
 }
 
 const getCoordsFromAddress = (address) => {
-    if (!geocoder) geocoder = new window.google.maps.Geocoder();
+    if (!geocoder) return;
     geocoder.geocode({ address }, (results, status) => {
         if (status === 'OK' && results[0]) {
             const location = results[0].geometry.location;
@@ -115,29 +112,32 @@ const onAddressInput = () => {
     }, 600);
 };
 
-const sendEmergency = () => {
-    alertStore.addGlobalSuccess(`Mensagem de emergência enviada!\nLocalização:  ${userAddress.value}`);
-    openForm.value = false;
-}
+const moveMarker = (lat, lng) => {
+    marker.setPosition({ lat, lng });
+    userLocation.value = { lat, lng };
+    getAddressFromCoords(lat, lng);
+    map.panTo({ lat, lng });
+};
 
-onClickOutside(formContainer, event => openForm.value = false)
+const initMap = async (lat, lng) => {
+    try {
+        const maps = await useGoogleMaps();
+        const [{ Map }, { Geocoder }, { Marker }] = await Promise.all([
+            maps.importLibrary('maps'),
+            maps.importLibrary('geocoding'),
+            maps.importLibrary('marker')
+        ]);
 
-onMounted(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        userLocation.value = { lat, lng };
+        geocoder = new Geocoder();
 
-        geocoder = new window.google.maps.Geocoder();
-
-        map = new window.google.maps.Map(document.getElementById('map'), {
+        map = new Map(mapEl.value, {
             center: { lat, lng },
             zoom: 15,
             styles: minimalStyle,
             disableDefaultUI: true
         });
 
-        marker = new window.google.maps.Marker({
+        marker = new Marker({
             position: { lat, lng },
             map,
             draggable: true,
@@ -146,31 +146,54 @@ onMounted(() => {
 
         getAddressFromCoords(lat, lng);
 
-        marker.addListener('dragend', (event) => {
-            const newLat = event.latLng.lat();
-            const newLng = event.latLng.lng();
-            userLocation.value = { lat: newLat, lng: newLng };
-            getAddressFromCoords(newLat, newLng);
-            map.panTo(marker.getPosition());
-        });
+        marker.addListener('dragend', (event) => moveMarker(event.latLng.lat(), event.latLng.lng()));
+        map.addListener('click', (event) => moveMarker(event.latLng.lat(), event.latLng.lng()));
+    } catch (error) {
+        console.error('Erro ao carregar o mapa:', error);
+        alertStore.addGlobalError('Não foi possível carregar o mapa. Digite o endereço.');
+    }
+};
 
-        map.addListener('click', (event) => {
-            const newLat = event.latLng.lat();
-            const newLng = event.latLng.lng();
-            marker.setPosition({ lat: newLat, lng: newLng });
-            userLocation.value = { lat: newLat, lng: newLng };
-            getAddressFromCoords(newLat, newLng);
-            map.panTo(marker.getPosition());
-        });
+const locateUser = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        userLocation.value = { lat, lng };
+        initMap(lat, lng);
     },
     (error) => {
         console.error("Erro ao obter localização:", error);
         alertStore.addGlobalError("Não foi possível obter sua localização. Por favor, ative o GPS.");
-    }, 
+    },
     {
         enableHighAccuracy: true
     });
+};
+
+// Ask for the location only when the user actually opens the form,
+// not as soon as the page loads
+watch(openForm, (open) => {
+    if (open && !map) locateUser();
 });
+
+const sendEmergency = () => {
+    if (!checked.value.length) {
+        alertStore.addGlobalError('Selecione pelo menos um destinatário.');
+        return;
+    }
+
+    const names = recipients
+        .filter((recipient) => checked.value.includes(recipient.value))
+        .map((recipient) => recipient.label)
+        .join(', ');
+    const location = userAddress.value || 'localização não informada';
+    const note = message.value ? ` Mensagem: "${message.value}"` : '';
+
+    alertStore.addGlobalSuccess(`Simulação: em um app real, sua localização (${location}) seria enviada para ${names}.${note}`);
+    openForm.value = false;
+}
+
+onClickOutside(formContainer, () => openForm.value = false)
 </script>
 
 <style lang="scss" scoped>
@@ -190,7 +213,6 @@ onMounted(() => {
         cursor: pointer;
         border-radius: 50%;
         box-shadow: 0px 0px 14px 7px var(--shadow-color);
-        transition: background-color 0.3s;
         transition: var(--transition);
         &:hover {
             transform: scale(1.05);
@@ -234,16 +256,30 @@ onMounted(() => {
         h2 {
             color: var(--white-color);
             font-size: var(--title-small);
-            margin-bottom: 40px;
+            margin-bottom: 20px;
+        }
+
+        .demo-notice {
+            color: var(--text-color);
+            font-size: var(--text-small);
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+
+            a {
+                text-decoration: underline;
+                font-family: var(--font-family-semibold);
+            }
         }
 
         form {
-            max-height: 60vh;
+            max-height: 55vh;
             overflow-y: auto;
         }
 
         .input-group {
-            
+
             label {
                 display: block;
                 margin-bottom: 10px;
@@ -251,7 +287,13 @@ onMounted(() => {
                 font-size: var(--subtitle-medium);
             }
 
-            #map {
+            .address {
+                margin-bottom: 10px;
+                border-radius: 8px;
+                padding: 8px;
+            }
+
+            .map {
                 width: 100%;
                 height: 200px;
                 border-radius: 20px;
