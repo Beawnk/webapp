@@ -116,36 +116,38 @@ export const useUserStore = defineStore('user', () => {
                 throw new Error('Erro de validação. Verifique os campos e tente novamente.');
             }
 
+            // The profile goes in the user metadata and the on_auth_user_created
+            // trigger creates the "Users" row (supabase/signup-profile-trigger.sql),
+            // so it exists even when signUp returns no session
             const { data, error } = await supabase.auth.signUp({
                 email,
-                password
+                password,
+                options: {
+                    data: {
+                        Name: user.Name,
+                        Birthdate: user.Birthdate,
+                        Phone: user.Phone,
+                        Zip_code: user.Zip_code,
+                        Street: user.Street,
+                        Number: user.Number,
+                        District: user.District,
+                        City: user.City,
+                        State: user.State,
+                    }
+                }
             });
 
             if (error || !data.user) throw new Error('Erro ao criar conta.');
 
-            const userData = {
-                Name: user.Name,
-                Birthdate: user.Birthdate,
-                Phone: user.Phone,
-                Zip_code: user.Zip_code,
-                Street: user.Street,
-                Number: user.Number,
-                District: user.District,
-                City: user.City,
-                State: user.State,
-                id: data.user.id,
-                Email: data.user.email,
-            };
+            // Email confirmation on: no session until the user clicks the link
+            if (!data.session) {
+                alertStore.addGlobalSuccess('Conta criada! Confirme pelo link que enviamos para o seu email e depois entre.');
+                return false;
+            }
 
-            const { error: insertError } = await supabase
-                .from('Users')
-                .insert([userData]);
-
-            if (insertError) throw new Error('Erro ao salvar informações do usuário.');
-
-            // With email confirmation off, signUp already signed the user in
             await loadProfile(data.user);
             alertStore.addGlobalSuccess('Conta criada com sucesso.');
+            return true;
         } catch (error) {
             alertStore.addGlobalError(error.message);
             throw error;

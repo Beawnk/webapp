@@ -181,7 +181,9 @@ const updateUserStore = handleSubmit(async (values) => {
   try {
     userStore.user.Name = values.name;
     userStore.user.Email = values.email;
-    userStore.user.Birthdate = values.birthdate;
+    // The raw input value ("YYYY-MM-DD"): values.birthdate is a Date cast by yup,
+    // whose JSON form is a UTC timestamp that can land on the previous day
+    userStore.user.Birthdate = birthdate.value;
     userStore.user.Phone = values.phone;
     userStore.user.Zip_code = values.cep;
     userStore.user.Street = values.street;
@@ -191,8 +193,10 @@ const updateUserStore = handleSubmit(async (values) => {
     userStore.user.State = values.state;
 
     if (isRegister.value) {
-      await userStore.register(values.email, values.password);
-      router.push({ name: 'dashboard' });
+      const loggedIn = await userStore.register(values.email, values.password);
+      // With email confirmation on there is no session yet: the user logs in
+      // after clicking the link in the email
+      router.push({ name: loggedIn ? 'dashboard' : 'login' });
     } else {
       await userStore.updateUser();
     }
