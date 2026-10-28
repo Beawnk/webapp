@@ -3,28 +3,27 @@
     <div class="gradient"></div>
     <div class="wrapper">
       <div class="logo-img">
-          <img :src="logo" alt="Logo">
-          <h1 class="title">IEmergency</h1>
+        <img :src="logo" alt="Logo" />
+        <h1 class="title">IEmergency</h1>
       </div>
       <div class="welcome-text">
-          <h2>Bem-vindo</h2>
+        <h2>Bem-vindo</h2>
       </div>
     </div>
     <div class="buttons">
-        <button class="btn secondary" @click="$router.push('/login')">Entrar</button>
-        <button class="btn primary" @click="$router.push('/register')">Cadastre-se</button>
-        <router-link to="/forgot-password" class="link">Esqueceu a senha?</router-link>
+      <button class="btn secondary" @click="$router.push('/login')">Entrar</button>
+      <button class="btn primary" @click="$router.push('/register')">Cadastre-se</button>
+      <router-link to="/forgot-password" class="link">Esqueceu a senha?</router-link>
     </div>
   </section>
 </template>
 
 <script setup>
-import logo from '@/assets/images/logo2.png'
+import logo from '@/assets/images/logo2.png';
 </script>
 
 <style lang="scss" scoped>
 .welcome {
-  
   .gradient {
     background: var(--primary-gradient-color);
     position: absolute;
@@ -46,7 +45,7 @@ import logo from '@/assets/images/logo2.png'
     align-items: center;
     justify-content: space-around;
     height: 60vh;
-    
+
     .logo-img {
       display: flex;
       flex-direction: column;
@@ -63,7 +62,7 @@ import logo from '@/assets/images/logo2.png'
         font-size: var(--title-super);
         text-align: center;
         margin-top: 10px;
-        text-shadow:  2px 5px 6px rgba(0,0,0,0.3);
+        text-shadow: 2px 5px 6px rgba(0, 0, 0, 0.3);
       }
     }
 

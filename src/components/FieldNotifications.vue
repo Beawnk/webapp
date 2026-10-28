@@ -1,8 +1,8 @@
 <template>
-	<transition name="alert-down" mode="out-in">
-		<p v-if="alertMessage" class="field-alert">{{ alertMessage }}</p>
-		<p v-else-if="alertMessageStore" class="field-alert">{{ alertMessageStore }}</p>
-	</transition>
+  <transition name="alert-down" mode="out-in">
+    <p v-if="alertMessage" class="field-alert">{{ alertMessage }}</p>
+    <p v-else-if="alertMessageStore" class="field-alert">{{ alertMessageStore }}</p>
+  </transition>
 </template>
 
 <script setup>
@@ -12,7 +12,7 @@ import { useAlertStore } from '@/stores/alertStore';
 
 // The name of the vee-validate field (or alertStore.fieldErrors key) to show
 const props = defineProps({
-	field: { type: String, required: true }
+  field: { type: String, required: true },
 });
 
 const alertStore = useAlertStore();
@@ -24,25 +24,27 @@ const alertMessageStore = computed(() => alertStore.fieldErrors[props.field]);
 
 <style lang="scss" scoped>
 .field-alert {
-	color: var(--error-color);
-	font-size: var(--text-small);
-	margin-top: 5px;
+  color: var(--error-color);
+  font-size: var(--text-small);
+  margin-top: 5px;
 }
 
 .alert-down-enter-active,
 .alert-down-leave-active {
-	transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 .alert-down-enter-from,
 .alert-down-leave-to {
-	opacity: 0;
-	transform: translateY(-10px);
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .alert-down-enter-to,
 .alert-down-leave-from {
-	opacity: 1;
-	transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

@@ -1,7 +1,7 @@
-import js from '@eslint/js'
-import pluginVue from 'eslint-plugin-vue'
-import globals from 'globals'
-import prettier from 'eslint-config-prettier'
+import js from '@eslint/js';
+import pluginVue from 'eslint-plugin-vue';
+import globals from 'globals';
+import prettier from 'eslint-config-prettier';
 
 export default [
   { ignores: ['dist/**', 'node_modules/**'] },
@@ -25,4 +25,4 @@ export default [
 
   // Last: turns off the formatting rules that Prettier owns
   prettier,
-]
+];

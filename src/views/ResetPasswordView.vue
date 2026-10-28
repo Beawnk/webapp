@@ -16,16 +16,32 @@
       <form v-else @submit.prevent="savePassword">
         <div class="input-group">
           <label for="password">Nova senha</label>
-          <input id="password" v-model="password" type="password" placeholder="Digite a nova senha" autocomplete="new-password" @blur="validatePassword()">
-          <FieldNotifications field="password"/>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            placeholder="Digite a nova senha"
+            autocomplete="new-password"
+            @blur="validatePassword()"
+          />
+          <FieldNotifications field="password" />
         </div>
         <div class="input-group">
           <label for="password-confirm">Confirme a nova senha</label>
-          <input id="password-confirm" v-model="passwordConfirm" type="password" placeholder="Digite a nova senha de novo" autocomplete="new-password" @blur="validatePasswordConfirm()">
-          <FieldNotifications field="passwordConfirm"/>
+          <input
+            id="password-confirm"
+            v-model="passwordConfirm"
+            type="password"
+            placeholder="Digite a nova senha de novo"
+            autocomplete="new-password"
+            @blur="validatePasswordConfirm()"
+          />
+          <FieldNotifications field="passwordConfirm" />
         </div>
         <div class="btn-flex">
-          <button type="submit" class="btn primary" :disabled="saving">{{ saving ? 'Salvando...' : 'Salvar senha' }}</button>
+          <button type="submit" class="btn primary" :disabled="saving">
+            {{ saving ? 'Salvando...' : 'Salvar senha' }}
+          </button>
         </div>
       </form>
     </div>
@@ -46,22 +62,28 @@ const saving = ref(false);
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
     // Same rule as the sign-up form (userSchema.js)
-    password: yup.string()
+    password: yup
+      .string()
       .required('Digite a nova senha')
       .min(6, 'Senha deve ter pelo menos 6 caracteres'),
-    passwordConfirm: yup.string()
+    passwordConfirm: yup
+      .string()
       .required('Confirme a nova senha')
-      .oneOf([yup.ref('password')], 'As senhas não são iguais')
+      .oneOf([yup.ref('password')], 'As senhas não são iguais'),
   }),
-  validateOnMount: false
+  validateOnMount: false,
 });
 
 const { value: password, validate: validatePassword } = useField('password', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
-const { value: passwordConfirm, validate: validatePasswordConfirm } = useField('passwordConfirm', undefined, {
-  validateOnValueUpdate: false
-});
+const { value: passwordConfirm, validate: validatePasswordConfirm } = useField(
+  'passwordConfirm',
+  undefined,
+  {
+    validateOnValueUpdate: false,
+  },
+);
 
 const savePassword = handleSubmit(async (values) => {
   saving.value = true;

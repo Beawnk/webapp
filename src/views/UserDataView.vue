@@ -1,79 +1,146 @@
 <template>
-    <section class="register">
-        <div class="gradient"></div>
-        <div class="header">
-          <AppMenu v-if="!isRegister" />
-          <h2 v-if="isRegister">Cadastro</h2>
-          <h2 v-else>Seus dados</h2>
+  <section class="register">
+    <div class="gradient"></div>
+    <div class="header">
+      <AppMenu v-if="!isRegister" />
+      <h2 v-if="isRegister">Cadastro</h2>
+      <h2 v-else>Seus dados</h2>
+    </div>
+    <div class="form-register">
+      <form @submit.prevent="updateUserStore">
+        <div class="input-group">
+          <label for="name">Nome</label>
+          <input
+            id="name"
+            v-model="name"
+            type="text"
+            placeholder="Digite seu nome"
+            @blur="validateField('name')"
+          />
+          <FieldNotifications field="name" />
         </div>
-        <div class="form-register">
-          <form @submit.prevent="updateUserStore">
-            <div class="input-group">
-              <label for="name">Nome</label>
-              <input id="name" v-model="name" type="text" placeholder="Digite seu nome" @blur="validateField('name')">
-              <FieldNotifications field="name"/>
-            </div>
-            <div class="input-group">
-              <label for="email">Email</label>
-              <input id="email" v-model="email" type="email" placeholder="Digite seu email" @blur="validateField('email')">
-              <FieldNotifications field="email"/>
-            </div>
-            <div v-if="isRegister" class="input-group">
-              <label for="password">Senha</label>
-              <input id="password" v-model="password" type="password" placeholder="Digite sua senha" @blur="validateField('password')" >
-              <FieldNotifications field="password"/>
-            </div>
-            <div class="input-group">
-              <label for="birthdate">Data de nascimento</label>
-              <input id="birthdate" v-model="birthdate" type="date" :disabled="!isRegister" @blur="validateField('birthdate')">
-              <FieldNotifications field="birthdate"/>
-            </div>
-            <div class="input-group">
-              <label for="phone">Telefone</label>
-              <input id="phone" v-model="phone" type="text" placeholder="Digite seu telefone" @blur="validateField('phone')">
-              <FieldNotifications field="phone"/>
-            </div>
-            <h3>Endereço</h3>
-            <div class="input-group">
-              <label for="zip">CEP</label>
-              <input id="zip" v-model="zip_code" type="text" placeholder="Digite seu CEP" @input="fillCep" @blur="validateField('cep')">
-              <FieldNotifications field="cep"/>
-            </div>
-            <div class="input-flex">
-              <div class="input-group street">
-                <label for="street">Rua</label>
-                <input id="street" v-model="street" type="text" placeholder="Digite sua rua" @blur="validateField('street')">
-                <FieldNotifications field="street"/>
-              </div>
-              <div class="input-group number">
-                <label for="number">Número</label>
-                <input id="number" v-model="number" type="text" placeholder="Número" @blur="validateField('number')">
-                <FieldNotifications field="number"/>
-              </div>
-            </div>
-            <div class="input-group">
-                <label for="district">Bairro</label>
-                <input id="district" v-model="district" type="text" placeholder="Digite seu bairro" @blur="validateField('district')">
-                <FieldNotifications field="district"/>
-            </div>
-            <div class="input-group">
-                <label for="city">Cidade</label>
-                <input id="city" v-model="city" type="text" placeholder="Digite sua cidade" @blur="validateField('city')">
-                <FieldNotifications field="city"/>
-            </div>
-            <div class="input-group">
-                <label for="state">Estado</label>
-                <input id="state" v-model="state" type="text" placeholder="Digite seu estado" @blur="validateField('state')">
-                <FieldNotifications field="state"/>
-            </div>
-            <div class="btn-flex">
-              <button v-if="isRegister" type="submit" class="btn primary">Cadastrar</button>
-              <button v-else type="submit" class="btn primary">Atualizar</button>
-              <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
-            </div>
-          </form>
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            placeholder="Digite seu email"
+            @blur="validateField('email')"
+          />
+          <FieldNotifications field="email" />
         </div>
-    </section>
+        <div v-if="isRegister" class="input-group">
+          <label for="password">Senha</label>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            placeholder="Digite sua senha"
+            @blur="validateField('password')"
+          />
+          <FieldNotifications field="password" />
+        </div>
+        <div class="input-group">
+          <label for="birthdate">Data de nascimento</label>
+          <input
+            id="birthdate"
+            v-model="birthdate"
+            type="date"
+            :disabled="!isRegister"
+            @blur="validateField('birthdate')"
+          />
+          <FieldNotifications field="birthdate" />
+        </div>
+        <div class="input-group">
+          <label for="phone">Telefone</label>
+          <input
+            id="phone"
+            v-model="phone"
+            type="text"
+            placeholder="Digite seu telefone"
+            @blur="validateField('phone')"
+          />
+          <FieldNotifications field="phone" />
+        </div>
+        <h3>Endereço</h3>
+        <div class="input-group">
+          <label for="zip">CEP</label>
+          <input
+            id="zip"
+            v-model="zip_code"
+            type="text"
+            placeholder="Digite seu CEP"
+            @input="fillCep"
+            @blur="validateField('cep')"
+          />
+          <FieldNotifications field="cep" />
+        </div>
+        <div class="input-flex">
+          <div class="input-group street">
+            <label for="street">Rua</label>
+            <input
+              id="street"
+              v-model="street"
+              type="text"
+              placeholder="Digite sua rua"
+              @blur="validateField('street')"
+            />
+            <FieldNotifications field="street" />
+          </div>
+          <div class="input-group number">
+            <label for="number">Número</label>
+            <input
+              id="number"
+              v-model="number"
+              type="text"
+              placeholder="Número"
+              @blur="validateField('number')"
+            />
+            <FieldNotifications field="number" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="district">Bairro</label>
+          <input
+            id="district"
+            v-model="district"
+            type="text"
+            placeholder="Digite seu bairro"
+            @blur="validateField('district')"
+          />
+          <FieldNotifications field="district" />
+        </div>
+        <div class="input-group">
+          <label for="city">Cidade</label>
+          <input
+            id="city"
+            v-model="city"
+            type="text"
+            placeholder="Digite sua cidade"
+            @blur="validateField('city')"
+          />
+          <FieldNotifications field="city" />
+        </div>
+        <div class="input-group">
+          <label for="state">Estado</label>
+          <input
+            id="state"
+            v-model="state"
+            type="text"
+            placeholder="Digite seu estado"
+            @blur="validateField('state')"
+          />
+          <FieldNotifications field="state" />
+        </div>
+        <div class="btn-flex">
+          <button v-if="isRegister" type="submit" class="btn primary">Cadastrar</button>
+          <button v-else type="submit" class="btn primary">Atualizar</button>
+          <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
+        </div>
+      </form>
+    </div>
+  </section>
 </template>
 
 <script setup>
@@ -88,7 +155,7 @@ import { useCepAutofill } from '@/composables/cepAutofill';
 
 // 'register' (/register, logged out) or 'profile' (/profile, logged in)
 const props = defineProps({
-  mode: { type: String, required: true }
+  mode: { type: String, required: true },
 });
 
 const userStore = useUserStore();
@@ -106,47 +173,47 @@ const { handleSubmit } = useForm({
 
 // Setup fields with validation
 const { value: email, validate: validateEmail } = useField('email', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: name, validate: validateName } = useField('name', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: password, validate: validatePassword } = useField('password', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: birthdate, validate: validateBirthdate } = useField('birthdate', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: phone, validate: validatePhone } = useField('phone', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: zip_code, validate: validateCep } = useField('cep', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: street, validate: validateStreet } = useField('street', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: number, validate: validateNumber } = useField('number', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: district, validate: validateDistrict } = useField('district', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: city, validate: validateCity } = useField('city', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const { value: state, validate: validateState } = useField('state', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 // Validate single field
@@ -162,9 +229,9 @@ const validateField = (fieldName) => {
     number: validateNumber,
     district: validateDistrict,
     city: validateCity,
-    state: validateState
+    state: validateState,
   };
-  
+
   if (validateMap[fieldName]) {
     validateMap[fieldName]();
   }
@@ -172,7 +239,7 @@ const validateField = (fieldName) => {
 
 const { fillCep } = useCepAutofill(
   { zipCode: zip_code, street, district, city, state },
-  validateField
+  validateField,
 );
 
 const updateUserStore = handleSubmit(async (values) => {
@@ -200,7 +267,6 @@ const updateUserStore = handleSubmit(async (values) => {
     } else {
       await userStore.updateUser();
     }
-    
   } catch (error) {
     console.error('Error updating user store:', error);
   }
@@ -231,12 +297,10 @@ onMounted(() => {
     state.value = userStore.user.State;
   }
 });
-
 </script>
 
 <style lang="scss" scoped>
 .register {
-
   .gradient {
     background: var(--primary-gradient-color);
     position: absolute;
@@ -250,8 +314,8 @@ onMounted(() => {
   }
 
   .header {
-    padding: 50px var(--side);   
-    padding-bottom: 0;  
+    padding: 50px var(--side);
+    padding-bottom: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -266,43 +330,42 @@ onMounted(() => {
   }
 
   .form-register {
-        padding: var(--side);
+    padding: var(--side);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    form {
+      width: 100%;
+      .btn-flex {
         display: flex;
-        flex-direction: column;
-        align-items: center;
         justify-content: center;
-        position: relative;
-        form {
-          width: 100%;
-          .btn-flex {
-            display: flex;
-            justify-content: center;
-          }
-          h3 {
-              color: var(--text-secondary-color);
-              font-size: var(--subtitle-medium);
-              margin: 20px 0;
-          }
+      }
+      h3 {
+        color: var(--text-secondary-color);
+        font-size: var(--subtitle-medium);
+        margin: 20px 0;
+      }
 
-          input:disabled {
-            pointer-events: none;
-            opacity: 0.5;
-          }
+      input:disabled {
+        pointer-events: none;
+        opacity: 0.5;
+      }
 
-          .street {
-            width: 80%;
-          }
-          .number {
-            width: 20%;
-          }
+      .street {
+        width: 80%;
+      }
+      .number {
+        width: 20%;
+      }
 
-          .btn-flex {
-            display: flex;
-            justify-content: space-between;
-            flex-direction: row-reverse;
-          }
-        }
+      .btn-flex {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row-reverse;
+      }
     }
+  }
 }
-
 </style>

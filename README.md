@@ -38,7 +38,7 @@ Os scripts em `supabase/` rodam no SQL Editor, **antes** de publicar o front-end
 3. `report-images-storage.sql` — bucket privado `report-images` e as policies.
 4. `emergencies.sql` — tabela dos pedidos de ajuda.
 
-Em **Authentication → URL Configuration**, adicione `<url do site>/reset-password` (e `http://localhost:5173/reset-password` para desenvolvimento) em *Redirect URLs*, senão o link de recuperação de senha não volta para o app.
+Em **Authentication → URL Configuration**, adicione `<url do site>/reset-password` (e `http://localhost:5173/reset-password` para desenvolvimento) em _Redirect URLs_, senão o link de recuperação de senha não volta para o app.
 
 O workflow `.github/workflows/keep-supabase-alive.yml` faz uma leitura no banco 4x por dia para o projeto Supabase (plano Free) não ser pausado.
 

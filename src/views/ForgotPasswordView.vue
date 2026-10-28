@@ -8,21 +8,34 @@
       <!-- Same message whether or not the email has an account: the page
            shouldn't reveal who is registered -->
       <div v-if="sent" class="sent" role="status">
-        <p>Se <strong>{{ sentTo }}</strong> tiver uma conta, você vai receber um email com um link para criar uma nova senha.</p>
+        <p>
+          Se <strong>{{ sentTo }}</strong> tiver uma conta, você vai receber um email com um link
+          para criar uma nova senha.
+        </p>
         <p>Não chegou? Confira o spam ou tente de novo em alguns minutos.</p>
         <div class="btn-flex">
           <router-link to="/login" class="btn primary">Voltar ao login</router-link>
         </div>
       </div>
       <form v-else @submit.prevent="sendLink">
-        <p class="hint">Digite o email da sua conta e enviaremos um link para você criar uma nova senha.</p>
+        <p class="hint">
+          Digite o email da sua conta e enviaremos um link para você criar uma nova senha.
+        </p>
         <div class="input-group">
           <label for="email">Email</label>
-          <input id="email" v-model="email" type="email" placeholder="Digite seu email" @blur="validateEmail()">
-          <FieldNotifications field="email"/>
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            placeholder="Digite seu email"
+            @blur="validateEmail()"
+          />
+          <FieldNotifications field="email" />
         </div>
         <div class="btn-flex">
-          <button type="submit" class="btn primary" :disabled="sending">{{ sending ? 'Enviando...' : 'Enviar link' }}</button>
+          <button type="submit" class="btn primary" :disabled="sending">
+            {{ sending ? 'Enviando...' : 'Enviar link' }}
+          </button>
           <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
         </div>
       </form>
@@ -46,15 +59,13 @@ const sending = ref(false);
 
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
-    email: yup.string()
-      .required('Digite seu email')
-      .email('Digite um email válido')
+    email: yup.string().required('Digite seu email').email('Digite um email válido'),
   }),
-  validateOnMount: false
+  validateOnMount: false,
 });
 
 const { value: email, validate: validateEmail } = useField('email', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const sendLink = handleSubmit(async (values) => {

@@ -2,14 +2,8 @@ import * as yup from 'yup';
 
 export const getUserSchema = (logged) => {
   const schema = {
-    email: yup
-      .string()
-      .required('Digite seu email')
-      .email('Digite um email válido'),
-    name: yup
-      .string()
-      .required('Digite seu nome')
-      .min(3, 'Nome deve ter pelo menos 3 caracteres'),
+    email: yup.string().required('Digite seu email').email('Digite um email válido'),
+    name: yup.string().required('Digite seu nome').min(3, 'Nome deve ter pelo menos 3 caracteres'),
     birthdate: yup
       .date()
       .required('Digite sua data de nascimento')
@@ -29,7 +23,7 @@ export const getUserSchema = (logged) => {
     number: yup.string().required('Digite o número'),
     district: yup.string().required('Digite seu bairro'),
     city: yup.string().required('Digite sua cidade'),
-    state: yup.string().required('Digite seu estado')
+    state: yup.string().required('Digite seu estado'),
   };
 
   if (!logged) {

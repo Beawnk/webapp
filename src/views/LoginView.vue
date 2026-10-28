@@ -8,13 +8,25 @@
       <form @submit.prevent="login">
         <div class="input-group">
           <label for="email">Email</label>
-          <input id="email" v-model="email" type="email" placeholder="Digite seu email" @blur="validateField('email')">
-          <FieldNotifications field="email"/>
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            placeholder="Digite seu email"
+            @blur="validateField('email')"
+          />
+          <FieldNotifications field="email" />
         </div>
         <div class="input-group">
           <label for="password">Senha</label>
-          <input id="password" v-model="password" type="password" placeholder="Digite sua senha" @blur="validateField('password')">
-          <FieldNotifications field="password"/>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            placeholder="Digite sua senha"
+            @blur="validateField('password')"
+          />
+          <FieldNotifications field="password" />
         </div>
         <router-link to="/forgot-password" class="link forgot">Esqueceu a senha?</router-link>
         <div class="btn-flex">
@@ -38,23 +50,20 @@ const route = useRoute();
 const router = useRouter();
 
 const loginSchema = yup.object({
-  email: yup.string()
-    .required('Digite seu email')
-    .email('Digite um email válido'),
-  password: yup.string()
-    .required('Digite sua senha')
+  email: yup.string().required('Digite seu email').email('Digite um email válido'),
+  password: yup.string().required('Digite sua senha'),
 });
 
 const { handleSubmit } = useForm({
   validationSchema: loginSchema,
-  validateOnMount: false
+  validateOnMount: false,
 });
 
 const { value: email, validate: validateEmail } = useField('email', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 const { value: password, validate: validatePassword } = useField('password', undefined, {
-  validateOnValueUpdate: false
+  validateOnValueUpdate: false,
 });
 
 const validateField = (fieldName) => {
@@ -76,7 +85,8 @@ const login = handleSubmit(async (values) => {
   // Back to the private page that sent the user here. Only same-app paths:
   // "//host" would be read as another site
   const redirect = route.query.redirect;
-  const isAppPath = typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//');
+  const isAppPath =
+    typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//');
   router.push(isAppPath ? redirect : { name: 'dashboard' });
 });
 
@@ -98,8 +108,8 @@ const goBack = useGoBack({ name: 'welcome' });
   }
 
   .header {
-    padding: 50px var(--side);   
-    padding-bottom: 0;  
+    padding: 50px var(--side);
+    padding-bottom: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;

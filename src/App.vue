@@ -1,17 +1,14 @@
 <template>
-    <main>
-        <!-- Always rendered: a live region only announces changes if it already exists -->
-        <Notifications
-          :errors="alertStore.globalErrors" 
-          :successes="alertStore.globalSuccesses" 
-        />
-        <router-view/>
-    </main>
-    <SpeedInsights />
+  <main>
+    <!-- Always rendered: a live region only announces changes if it already exists -->
+    <Notifications :errors="alertStore.globalErrors" :successes="alertStore.globalSuccesses" />
+    <router-view />
+  </main>
+  <SpeedInsights />
 </template>
 
 <script setup>
-import { SpeedInsights } from '@vercel/speed-insights/vue'; 
+import { SpeedInsights } from '@vercel/speed-insights/vue';
 import { watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/UserStore';
@@ -25,89 +22,93 @@ const router = useRouter();
 
 // Leave private pages as soon as the session ends (logout, expired session,
 // logout in another tab); the router guard only runs on navigation
-watch(() => userStore.logged, (logged) => {
-  if (!logged && route.meta.requiresAuth) {
-    router.push({ name: 'welcome' });
-  }
-});
+watch(
+  () => userStore.logged,
+  (logged) => {
+    if (!logged && route.meta.requiresAuth) {
+      router.push({ name: 'welcome' });
+    }
+  },
+);
 </script>
 
 <style lang="scss">
 main {
-    max-width: 500px;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    min-height: 100vh;
-    overflow: hidden;
-    background-color: var(--background-color);
+  max-width: 500px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: var(--background-color);
 }
 
 .btn {
-    border-radius: 40px;
-    padding: 5px 15px;
-    min-width: 130px;
-    font-size: var(--subtitle-medium);
-    border: 2px solid var(--primary-color);
+  border-radius: 40px;
+  padding: 5px 15px;
+  min-width: 130px;
+  font-size: var(--subtitle-medium);
+  border: 2px solid var(--primary-color);
 
-    &.primary {
-        background-color: var(--primary-color);
-        color: var(--text-color);
-        box-shadow: var(--shadow);
-    }
+  &.primary {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    box-shadow: var(--shadow);
+  }
 
-    &.secondary {
-        background-color: transparent;
-        color: var(--primary-color);
-    }
+  &.secondary {
+    background-color: transparent;
+    color: var(--primary-color);
+  }
 
-    &.back-btn {
-        background-image: url('@/assets/images/icons/back-icon-purple.png');
-        background-size: 10px;
-        background-position: 10px center;
-        background-repeat: no-repeat;
-    }
+  &.back-btn {
+    background-image: url('@/assets/images/icons/back-icon-purple.png');
+    background-size: 10px;
+    background-position: 10px center;
+    background-repeat: no-repeat;
+  }
 
-    &:hover {
-        transform: scale(1.05);
-    }
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 
 a.link {
-    color: var(--primary-color);
-    font-size: var(--subtitle-small);
-    opacity: 0.5;
+  color: var(--primary-color);
+  font-size: var(--subtitle-small);
+  opacity: 0.5;
 
-    &:hover {
-        opacity: 1;
-    }
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .input-flex {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .input-group {
-    margin-bottom: 20px;
-    width: 100%;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
-input, textarea {
-    display: block;
-    width: 100%;
-    padding: 20px 15px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    background-color: var(--input-color);
-    font-family: var(--font-family);
-    font-size: var(--text-big);
-    outline: none;
+input,
+textarea {
+  display: block;
+  width: 100%;
+  padding: 20px 15px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-color);
+  font-family: var(--font-family);
+  font-size: var(--text-big);
+  outline: none;
 
-    &:focus {
-        border-color: var(--border-color-focus);
-    }            
+  &:focus {
+    border-color: var(--border-color-focus);
+  }
 }
 
 input::placeholder {
@@ -115,72 +116,71 @@ input::placeholder {
 }
 
 label {
-    color: var(--gray-color);
-    font-size: var(--subtitle-small);
-    margin-bottom: 5px;
-    display: block;
+  color: var(--gray-color);
+  font-size: var(--subtitle-small);
+  margin-bottom: 5px;
+  display: block;
 }
 
 .checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  input[type='checkbox'] {
+    /* Hide the default checkbox */
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+  }
+
+  /* Custom box */
+  label {
+    position: relative;
+    margin-bottom: 0 !important;
+    padding-left: 30px;
+    cursor: pointer;
+    user-select: none;
+    padding-top: 2px;
+    min-height: 22px;
     display: flex;
     align-items: center;
-    gap: 10px;
 
-    input[type="checkbox"] {
-        /* Hide the default checkbox */
-        opacity: 0;
-        width: 0;
-        height: 0;
-        position: absolute;
-        z-index: -1;
-        top: 0;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--white-color);
+      border-radius: 50%;
+      background: transparent;
+      transition: background 0.2s;
     }
+  }
 
-    /* Custom box */
-    label {
-        position: relative;
-        margin-bottom: 0 !important;
-        padding-left: 30px;
-        cursor: pointer;
-        user-select: none;
-        padding-top: 2px;
-        min-height: 22px;
-        display: flex;
-        align-items: center;
+  /* Checked state */
+  input[type='checkbox']:checked + label::before {
+    background: var(--white-color);
+    border-color: var(--white-color);
+  }
 
-        &::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--white-color);
-            border-radius: 50%;
-            background: transparent;
-            transition: background 0.2s;
-        }
-    }
-
-    /* Checked state */
-    input[type="checkbox"]:checked + label::before {
-        background: var(--white-color);
-        border-color: var(--white-color);
-    }
-
-    /* Checkmark */
-    input[type="checkbox"]:checked + label::after {
-        content: "";
-        position: absolute;
-        left: 5px;
-        top: 8px;
-        width: 7.5px;
-        height: 4px;
-        border-left: 2px solid #6a3b84;
-        border-bottom: 2px solid #6a3b84;
-        transform: rotate(-45deg);
-    }
+  /* Checkmark */
+  input[type='checkbox']:checked + label::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    width: 7.5px;
+    height: 4px;
+    border-left: 2px solid #6a3b84;
+    border-bottom: 2px solid #6a3b84;
+    transform: rotate(-45deg);
+  }
 }
-
 </style>
