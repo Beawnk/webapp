@@ -13,7 +13,7 @@
             <form @submit.prevent="submitReport">
                 <div class="input-group">
                     <label for="zip-code">CEP (opcional)</label>
-                    <input type="text" id="zip-code" placeholder="Digite o CEP" v-model="zip_code" @keyup="fillCep" @blur="validateField('cep')">
+                    <input type="text" id="zip-code" placeholder="Digite o CEP" v-model="zip_code" @input="fillCep" @blur="validateField('cep')">
                     <FieldNotifications field="cep"/>
                 </div>
                 <div class="input-flex">
@@ -102,7 +102,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { useHandleImages } from '@/composables/handleImages';
-import { useGetAddress } from '@/composables/getAddress';
+import { useCepAutofill } from '@/composables/cepAutofill';
 import { useUserStore } from '@/stores/UserStore';
 import { useForm, useField } from 'vee-validate';
 import { supabase } from '@/lib/supabaseClient';
@@ -125,6 +125,7 @@ const reportSchema = yup.object({
     .string()
     .nullable()
     .notRequired()
+    .transform((value) => (value ? value.replace(/\D/g, '') : value))
     .test('valid-cep', 'CEP deve conter 8 dígitos', (value) => {
       if (!value) return true; 
       return /^\d{8}$/.test(value); 
@@ -201,21 +202,10 @@ const validateField = (fieldName) => {
   }
 };
   
-const fillCep = async () => {
-  const cepValue = zip_code.value.replace(/\D/g, '');
-  if (cepValue.length == 8) {
-    const address = await useGetAddress(cepValue);
-    street.value = address.logradouro;
-    district.value = address.bairro;
-    city.value = address.localidade;
-    state.value = address.uf;
-
-    validateField('street');
-    validateField('district');
-    validateField('city');
-    validateField('state');
-  }
-};
+const { fillCep } = useCepAutofill(
+  { zipCode: zip_code, street, district, city, state },
+  validateField
+);
 
 const onFileChange = async (e) => {
 	images.value = await useHandleImages(images.value, e);
@@ -231,7 +221,7 @@ const submitReport = handleSubmit(async (values) => {
     const reportData = {
       Type: props.type,
       User_id: userStore.user.id,
-      Zip_code: values.zip_code,
+      Zip_code: values.cep,
       Street: values.street,
       Number: values.number,
       District: values.district,

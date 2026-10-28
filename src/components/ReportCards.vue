@@ -86,7 +86,7 @@ watch(() => props.searchQuery, (newVal) => {
 
         p {
             font-size: var(--text-big);
-            color: var(--grey-color);
+            color: var(--gray-color);
             opacity: 0.5;
         }
     }

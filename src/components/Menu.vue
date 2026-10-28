@@ -25,9 +25,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 import { useUserStore } from '@/stores/UserStore';
-import { useClickOutside } from '@/composables/clickOutside';
 import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
@@ -50,13 +50,10 @@ const openProfile = () => {
     userStore.page = 'profile';
 };
 
-onMounted(() => {
-    useClickOutside(menu, menuBtn, () => {
-        if (menuOpen.value) {
-            menuOpen.value = false;
-        }
-    });
-});
+// VueUse removes the listener when the component unmounts
+onClickOutside(menu, () => {
+    menuOpen.value = false;
+}, { ignore: [menuBtn] });
 </script>
 
 <style lang="scss" scoped>

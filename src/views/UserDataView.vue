@@ -36,7 +36,7 @@
             <h3>Endereço</h3>
             <div class="input-group">
               <label for="zip">CEP</label>
-              <input type="text" id="zip" placeholder="Digite seu CEP" v-model="zip_code" @keyup="fillCep" @blur="validateField('zip_code')">
+              <input type="text" id="zip" placeholder="Digite seu CEP" v-model="zip_code" @input="fillCep" @blur="validateField('cep')">
               <FieldNotifications field="cep"/>
             </div>
             <div class="input-flex">
@@ -82,7 +82,7 @@ import { useForm, useField } from 'vee-validate';
 import { getUserSchema } from '@/composables/userSchema';
 import { useAlertStore } from '@/stores/alertStore';
 import { useUserStore } from '@/stores/UserStore';
-import { useGetAddress } from '@/composables/getAddress';
+import { useCepAutofill } from '@/composables/cepAutofill';
 
 const userStore = useUserStore();
 const alertStore = useAlertStore();
@@ -171,24 +171,12 @@ const validateField = (fieldName) => {
   }
 };
 
-const fillCep = async () => {
-  const cepValue = zip_code.value.replace(/\D/g, '');
-  if (cepValue.length == 8) {
-    const address = await useGetAddress(cepValue);
-    street.value = address.logradouro;
-    district.value = address.bairro;
-    city.value = address.localidade;
-    state.value = address.uf;
-
-    validateField('street');
-    validateField('district');
-    validateField('city');
-    validateField('state');
-  }
-};
+const { fillCep } = useCepAutofill(
+  { zipCode: zip_code, street, district, city, state },
+  validateField
+);
 
 const updateUserStore = handleSubmit(async (values) => {
-  console.log('Form values:', values);
   alertStore.clearNotifications();
 
   try {
@@ -196,7 +184,7 @@ const updateUserStore = handleSubmit(async (values) => {
     userStore.user.Email = values.email;
     userStore.user.Birthdate = values.birthdate;
     userStore.user.Phone = values.phone;
-    userStore.user.Zip_code = values.zip_code;
+    userStore.user.Zip_code = values.cep;
     userStore.user.Street = values.street;
     userStore.user.Number = values.number;
     userStore.user.District = values.district;

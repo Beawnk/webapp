@@ -1,27 +1,30 @@
-// stores/errorStore.js
 import { defineStore } from 'pinia';
 import { ref, reactive } from 'vue';
+
+const ALERT_DURATION = 4000;
 
 export const useAlertStore = defineStore('notification', () => {
   const globalErrors = ref([]); // Errors displayed at the top of the screen
   const globalSuccesses = ref([]); // Success messages displayed at the top of the screen
   const fieldErrors = reactive({}); // Field-specific errors
 
-  // Add a global error
-  const addGlobalError = (message) => {
-    globalErrors.value.push(message);
+  let nextId = 0;
+
+  // Each message has its own id, so its timer removes exactly that message
+  // (removing "the oldest" would drop the wrong one after a clear)
+  const addMessage = (list, text) => {
+    const id = nextId++;
+    list.value.push({ id, text });
     setTimeout(() => {
-      globalErrors.value.shift(); // Auto-remove after 5 seconds
-    }, 4000);
+      list.value = list.value.filter((message) => message.id !== id);
+    }, ALERT_DURATION);
   };
 
+  // Add a global error
+  const addGlobalError = (message) => addMessage(globalErrors, message);
+
   // Add a global success
-  const addGlobalSuccess = (message) => {
-    globalSuccesses.value.push(message);
-    setTimeout(() => {
-      globalSuccesses.value.shift(); // Auto-remove after 5 seconds
-    }, 4000);
-  };
+  const addGlobalSuccess = (message) => addMessage(globalSuccesses, message);
 
   // Set a field-specific error
   const setFieldError = (field, message) => {

@@ -2,12 +2,12 @@
 	<div class="alert-container">
 		<transition name="alert" mode="out-in">
 	  		<div v-if="successes.length" class="success alert">
-				<p v-for="(success, index) in successes" :key="'success-' + index">{{ success }}</p>
+				<p v-for="success in successes" :key="success.id">{{ success.text }}</p>
 	  		</div>
 		</transition>
 		<transition name="alert" mode="out-in">
 	  		<div v-if="errors.length" class="error alert">
-				<p v-for="(error, index) in errors" :key="'error-' + index">{{ error }}</p>
+				<p v-for="error in errors" :key="error.id">{{ error.text }}</p>
 	  		</div>
 		</transition>
 	</div>
