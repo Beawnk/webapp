@@ -1,8 +1,8 @@
 <template>
     <div class="search">
-        <input type="text" id="search" name="search" aria-label="Pesquisar por tipo de denúncia" v-model="searchQuery" placeholder="Pesquisar por tipo de denúncia..." @input="searchReportType" @keyup.enter.prevent="searchReportType">
+        <input id="search" v-model="searchQuery" type="text" name="search" aria-label="Pesquisar por tipo de denúncia" placeholder="Pesquisar por tipo de denúncia..." @input="searchReportType" @keyup.enter.prevent="searchReportType">
         <button type="button" class="search-btn" aria-label="Pesquisar" @click="searchReportType"></button>
-        <button type="button" class="clear" aria-label="Limpar pesquisa" @click="clearSearch" v-show="searchQuery"></button>
+        <button v-show="searchQuery" type="button" class="clear" aria-label="Limpar pesquisa" @click="clearSearch"></button>
     </div>
 </template>
 

@@ -2,8 +2,8 @@
   <!-- The root is the focusable element, so a @blur passed by the parent
        (falls through as a native listener) fires when focus leaves the select -->
   <div
-    class="custom-select"
     ref="root"
+    class="custom-select"
     tabindex="0"
     role="combobox"
     aria-haspopup="listbox"
@@ -35,9 +35,9 @@ import { ref, computed, useId } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 const props = defineProps({
-  modelValue: [String, Number, Boolean],
+  modelValue: { type: [String, Number, Boolean], default: '' },
   options: { type: Array, required: true }, // [{ label, value }]
-  label: String
+  label: { type: String, default: '' }
 })
 const emit = defineEmits(['update:modelValue'])
 

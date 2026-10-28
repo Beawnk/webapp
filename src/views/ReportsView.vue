@@ -2,12 +2,12 @@
     <section class="reports-view">
         <div class="gradient"></div>
         <div class="header">
-            <Menu/>
+            <AppMenu/>
             <h2>Suas Denúncias</h2>
         </div>
         <div class="content">
             <div class="reports-list">
-                <router-link class="report-item" v-for="report in reports" :key="report.id" :to="{ name: 'report', params: { id: report.id } }">
+                <router-link v-for="report in reports" :key="report.id" class="report-item" :to="{ name: 'report', params: { id: report.id } }">
                     <div class="report-icon">
                         <img :src="report.icon" alt="" />
                     </div>
@@ -20,7 +20,7 @@
                     </div>
                 </router-link>
             </div>
-            <div class="empty-state" v-if="!loading && reports.length === 0">
+            <div v-if="!loading && reports.length === 0" class="empty-state">
                 <h3>Nenhuma denúncia registrada</h3>
                 <p>Você ainda não fez nenhuma denúncia.</p>
             </div>

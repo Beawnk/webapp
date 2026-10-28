@@ -2,7 +2,7 @@
     <section class="register">
         <div class="gradient"></div>
         <div class="header">
-          <Menu v-if="!isRegister" />
+          <AppMenu v-if="!isRegister" />
           <h2 v-if="isRegister">Cadastro</h2>
           <h2 v-else>Seus dados</h2>
         </div>
@@ -10,65 +10,65 @@
           <form @submit.prevent="updateUserStore">
             <div class="input-group">
               <label for="name">Nome</label>
-              <input type="text" id="name" placeholder="Digite seu nome" v-model="name" @blur="validateField('name')">
+              <input id="name" v-model="name" type="text" placeholder="Digite seu nome" @blur="validateField('name')">
               <FieldNotifications field="name"/>
             </div>
             <div class="input-group">
               <label for="email">Email</label>
-              <input type="email" id="email" placeholder="Digite seu email" v-model="email" @blur="validateField('email')">
+              <input id="email" v-model="email" type="email" placeholder="Digite seu email" @blur="validateField('email')">
               <FieldNotifications field="email"/>
             </div>
-            <div class="input-group" v-if="isRegister">
+            <div v-if="isRegister" class="input-group">
               <label for="password">Senha</label>
-              <input type="password" id="password" placeholder="Digite sua senha" v-model="password" @blur="validateField('password')" >
+              <input id="password" v-model="password" type="password" placeholder="Digite sua senha" @blur="validateField('password')" >
               <FieldNotifications field="password"/>
             </div>
             <div class="input-group">
               <label for="birthdate">Data de nascimento</label>
-              <input type="date" id="birthdate" v-model="birthdate" @blur="validateField('birthdate')" :disabled="!isRegister">
+              <input id="birthdate" v-model="birthdate" type="date" :disabled="!isRegister" @blur="validateField('birthdate')">
               <FieldNotifications field="birthdate"/>
             </div>
             <div class="input-group">
               <label for="phone">Telefone</label>
-              <input type="text" id="phone" placeholder="Digite seu telefone" v-model="phone" @blur="validateField('phone')">
+              <input id="phone" v-model="phone" type="text" placeholder="Digite seu telefone" @blur="validateField('phone')">
               <FieldNotifications field="phone"/>
             </div>
             <h3>Endereço</h3>
             <div class="input-group">
               <label for="zip">CEP</label>
-              <input type="text" id="zip" placeholder="Digite seu CEP" v-model="zip_code" @input="fillCep" @blur="validateField('cep')">
+              <input id="zip" v-model="zip_code" type="text" placeholder="Digite seu CEP" @input="fillCep" @blur="validateField('cep')">
               <FieldNotifications field="cep"/>
             </div>
             <div class="input-flex">
               <div class="input-group street">
                 <label for="street">Rua</label>
-                <input type="text" id="street" placeholder="Digite sua rua" v-model="street" @blur="validateField('street')">
+                <input id="street" v-model="street" type="text" placeholder="Digite sua rua" @blur="validateField('street')">
                 <FieldNotifications field="street"/>
               </div>
               <div class="input-group number">
                 <label for="number">Número</label>
-                <input type="text" id="number" placeholder="Número" v-model="number" @blur="validateField('number')">
+                <input id="number" v-model="number" type="text" placeholder="Número" @blur="validateField('number')">
                 <FieldNotifications field="number"/>
               </div>
             </div>
             <div class="input-group">
                 <label for="district">Bairro</label>
-                <input type="text" id="district" placeholder="Digite seu bairro" v-model="district" @blur="validateField('district')">
+                <input id="district" v-model="district" type="text" placeholder="Digite seu bairro" @blur="validateField('district')">
                 <FieldNotifications field="district"/>
             </div>
             <div class="input-group">
                 <label for="city">Cidade</label>
-                <input type="text" id="city" placeholder="Digite sua cidade" v-model="city" @blur="validateField('city')">
+                <input id="city" v-model="city" type="text" placeholder="Digite sua cidade" @blur="validateField('city')">
                 <FieldNotifications field="city"/>
             </div>
             <div class="input-group">
                 <label for="state">Estado</label>
-                <input type="text" id="state" placeholder="Digite seu estado" v-model="state" @blur="validateField('state')">
+                <input id="state" v-model="state" type="text" placeholder="Digite seu estado" @blur="validateField('state')">
                 <FieldNotifications field="state"/>
             </div>
             <div class="btn-flex">
-              <button type="submit" class="btn primary" v-if="isRegister">Cadastrar</button>
-              <button type="submit" class="btn primary" v-else>Atualizar</button>
+              <button v-if="isRegister" type="submit" class="btn primary">Cadastrar</button>
+              <button v-else type="submit" class="btn primary">Atualizar</button>
               <button type="button" class="btn secondary back-btn" @click="goBack">Voltar</button>
             </div>
           </form>

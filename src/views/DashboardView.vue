@@ -2,7 +2,7 @@
   <section class="dashboard">
     <div class="gradient"></div>
     <div class="header">
-        <Menu/>
+        <AppMenu/>
         <div class="info">
             <h2>Olá, {{ userStore.firstName }}!</h2>
             <p>O que você quer denunciar?</p>

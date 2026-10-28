@@ -1,6 +1,6 @@
 <template>
     <div class="emergency-numbers">
-        <div class="container" ref="numbers">
+        <div ref="numbers" class="container">
             <div class="title">
                 <h2>Números de Emergência</h2>
             </div>
@@ -39,7 +39,7 @@ const emit = defineEmits(['close']);
 
 const numbers = ref(null);
 
-onClickOutside(numbers, event => emit('close'))
+onClickOutside(numbers, () => emit('close'))
 </script>
 
 <style lang="scss" scoped>

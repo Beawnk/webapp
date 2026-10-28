@@ -1,5 +1,5 @@
 <template>
-    <div class="menu-btn" ref="menuBtn">
+    <div ref="menuBtn" class="menu-btn">
 		<button type="button" aria-label="Abrir menu" :aria-expanded="menuOpen" @click.prevent="toggleMenu">
 			<span></span>
        		<span></span>
@@ -7,7 +7,7 @@
 		</button>
 	</div>
     <div class="menu-shadow" :class="{ 'open': menuOpen }" >
-        <div class="menu" ref="menu">
+        <div ref="menu" class="menu">
             <div class="app-name">
                 <div class="app-logo">
                     <img src="@/assets/images/logo2.png" alt="Logo">

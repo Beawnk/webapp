@@ -1,6 +1,6 @@
 <template>
   <div class="cards">
-        <button type="button" class="card" v-for="item in filteredItems" :key="item.label" @click="$emit('reportSelected', item.label)">
+        <button v-for="item in filteredItems" :key="item.label" type="button" class="card" @click="$emit('reportSelected', item.label)">
           <div class="icon">
             <img :src="item.icon" alt="">
           </div>
@@ -13,8 +13,10 @@
 import { computed } from 'vue'
 import { reportTypes } from '@/constants/reportTypes'
 
-const props = defineProps(['searchQuery'])
-const emit = defineEmits(['reportSelected'])
+const props = defineProps({
+  searchQuery: { type: String, default: '' }
+})
+defineEmits(['reportSelected'])
 
 const cleanSearch = (str) =>
   str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()

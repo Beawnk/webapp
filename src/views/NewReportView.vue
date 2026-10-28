@@ -2,7 +2,7 @@
   <section class="new-report-view">
     <div class="gradient"></div>
     <div class="header">
-        <Menu/>
+        <AppMenu/>
         <h2>Denunciar</h2>
     </div>
     <div class="content">
@@ -13,40 +13,40 @@
             <form @submit.prevent="submitReport">
                 <div class="input-group">
                     <label for="zip-code">CEP (opcional)</label>
-                    <input type="text" id="zip-code" placeholder="Digite o CEP" v-model="zip_code" @input="fillCep" @blur="validateField('cep')">
+                    <input id="zip-code" v-model="zip_code" type="text" placeholder="Digite o CEP" @input="fillCep" @blur="validateField('cep')">
                     <FieldNotifications field="cep"/>
                 </div>
                 <div class="input-flex">
                     <div class="input-group street">
                         <label for="street">Rua</label>
-                        <input type="text" id="street" placeholder="Digite a rua" v-model="street" @blur="validateField('street')">
+                        <input id="street" v-model="street" type="text" placeholder="Digite a rua" @blur="validateField('street')">
                         <FieldNotifications field="street"/>
                     </div>
                     <div class="input-group number">
                         <label for="number">Número</label>
-                        <input type="text" id="number" placeholder="Número" v-model="number" @blur="validateField('number')">
+                        <input id="number" v-model="number" type="text" placeholder="Número" @blur="validateField('number')">
                         <FieldNotifications field="number"/>
                     </div>
                 </div>
                 <div class="input-group">
                     <label for="district">Bairro</label>
-                    <input type="text" id="district" placeholder="Digite o bairro" v-model="district" @blur="validateField('district')">
+                    <input id="district" v-model="district" type="text" placeholder="Digite o bairro" @blur="validateField('district')">
                     <FieldNotifications field="district"/>
                 </div>
                 <div class="input-group">
                     <label for="city">Cidade</label>
-                    <input type="text" id="city" placeholder="Digite a cidade" v-model="city" @blur="validateField('city')">
+                    <input id="city" v-model="city" type="text" placeholder="Digite a cidade" @blur="validateField('city')">
                     <FieldNotifications field="city"/>
                 </div>
                 <div class="input-group">
                     <label for="state">Estado</label>
-                    <input type="text" id="state" placeholder="Digite o estado" v-model="state" @blur="validateField('state')">
+                    <input id="state" v-model="state" type="text" placeholder="Digite o estado" @blur="validateField('state')">
                     <FieldNotifications field="state"/>
                 </div>
                 <div class="input-group">
                     <label id="local-type-label">Tipo de local</label>
-                    <CustomSelect @blur="validateField('localType')" aria-labelledby="local-type-label"
-                      v-model="localType"
+                    <CustomSelect
+v-model="localType" aria-labelledby="local-type-label"
                       :options="[
                         { label: 'Residencial', value: 'Residencial' },
                         { label: 'Comercial', value: 'Comercial' },
@@ -54,21 +54,22 @@
                         { label: 'Outro', value: 'Outro' }
                       ]"
                       label="Selecione"
+                      @blur="validateField('localType')"
                     />
                     <FieldNotifications field="localType"/>
                 </div>
                 <div class="input-group">
                     <label for="description">Descrição</label>
-                    <textarea id="description" placeholder="Descreva o que está acontecendo:" v-model="description" @blur="validateField('description')"></textarea>
+                    <textarea id="description" v-model="description" placeholder="Descreva o que está acontecendo:" @blur="validateField('description')"></textarea>
                     <FieldNotifications :field="'description'" />
                 </div>
                 <div class="input-group">
                     <label for="images">Imagens (opcional)</label>
 					<div class="images">
 						<div
-							class="image"
 							v-for="(image, index) in images"
 							:key="image.preview"
+							class="image"
 							@mouseover="imgHoverIndex = index"
 							@mouseleave="imgHoverIndex = null"
 						>
@@ -80,13 +81,13 @@
 								@click.prevent="removeImage(index)"
 							></button>
 						</div>
-						<div class="input-image" v-show="images.length < 3">
+						<div v-show="images.length < 3" class="input-image">
 							<input
-								type="file"
 								id="images"
+								type="file"
 								accept="image/png, image/jpeg"
-								@change="onFileChange"
 								multiple
+								@change="onFileChange"
 							/>
 						</div>
 					</div>
@@ -116,7 +117,10 @@ import { useRouter } from 'vue-router';
 import CustomSelect from '@/components/CustomSelect.vue'
 import * as yup from 'yup';
 
-const props = defineProps(['type'])
+// Report type label from /new-report/:type (validated in the router)
+const props = defineProps({
+  type: { type: String, required: true }
+})
 
 const userStore = useUserStore();
 const alertStore = useAlertStore();

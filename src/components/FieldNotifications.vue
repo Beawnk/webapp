@@ -1,7 +1,7 @@
 <template>
 	<transition name="alert-down" mode="out-in">
-		<p class="field-alert" v-if="alertMessage">{{ alertMessage }}</p>
-		<p class="field-alert" v-else-if="alertMessageStore">{{ alertMessageStore }}</p>
+		<p v-if="alertMessage" class="field-alert">{{ alertMessage }}</p>
+		<p v-else-if="alertMessageStore" class="field-alert">{{ alertMessageStore }}</p>
 	</transition>
 </template>
 
@@ -10,7 +10,10 @@ import { computed } from 'vue';
 import { useFieldError } from 'vee-validate';
 import { useAlertStore } from '@/stores/alertStore';
 
-const props = defineProps(['field']); // The name of the field passed as a prop
+// The name of the vee-validate field (or alertStore.fieldErrors key) to show
+const props = defineProps({
+	field: { type: String, required: true }
+});
 
 const alertStore = useAlertStore();
 

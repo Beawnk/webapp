@@ -2,7 +2,7 @@
   <section class="report-view">
         <div class="gradient"></div>
         <div class="header">
-          <Menu />
+          <AppMenu />
           <h2>{{ report ? report.Type : 'Denúncia' }}</h2>
         </div>    
         <div class="content">
@@ -23,7 +23,7 @@
                   </div>
               </div>
             </div>
-            <div class="report-images" v-if="imageUrls.length > 0">
+            <div v-if="imageUrls.length > 0" class="report-images">
               <h3>Imagens</h3>
               <div class="images">
                 <img v-for="(image, index) in imageUrls" :key="index" :src="image" :alt="`Imagem ${index + 1} da denúncia`" />
@@ -63,7 +63,10 @@ const router = useRouter();
 const alertStore = useAlertStore();
 const goBack = useGoBack({ name: 'reports' });
 
-const props = defineProps(['id']);
+// Route param, always a string
+const props = defineProps({
+    id: { type: String, required: true }
+});
 
 const fetchReport = async () => {
     // maybeSingle: a report that doesn't exist (or isn't the user's, by RLS) is null, not an error

@@ -3,7 +3,7 @@
         <button type="button" class="emergency" @click.prevent="openForm = true">Chamar Ajuda</button>
     </div>
     <div class="emergency-form" :class="{ open: openForm }">
-        <div class="container" ref="formContainer" role="dialog" aria-modal="true" aria-labelledby="emergency-form-title">
+        <div ref="formContainer" class="container" role="dialog" aria-modal="true" aria-labelledby="emergency-form-title">
             <h2 id="emergency-form-title">Chamar ajuda</h2>
             <p class="demo-notice">
                 O app registra seu pedido, mas não aciona os serviços sozinho.
@@ -11,7 +11,7 @@
             </p>
             <!-- After registering, the call buttons replace the form. v-show, not v-if:
                  the map lives inside the form and must survive a second opening -->
-            <div class="sent" v-show="callList.length" role="status">
+            <div v-show="callList.length" class="sent" role="status">
                 <p>Pedido registrado. Agora ligue:</p>
                 <a v-for="call in callList" :key="call.number" :href="`tel:${call.number}`" class="call-btn">
                     <strong>{{ call.number }}</strong> {{ call.label }}
@@ -25,23 +25,23 @@
                     <label for="address">Sua localização atual</label>
                     <input
                         id="address"
+                        v-model="userAddress"
                         class="address"
                         type="text"
-                        v-model="userAddress"
                         placeholder="Digite o endereço..."
-                        @input="onAddressInput"
                         autocomplete="off"
+                        @input="onAddressInput"
                     />
-                    <div class="map" ref="mapEl"></div>
+                    <div ref="mapEl" class="map"></div>
                 </div>
                 <div class="input-group">
                     <label for="message">Mensagem (opcional)</label>
-                    <textarea id="message" rows="3" placeholder="Descreva sua situação..." v-model="message"></textarea>
+                    <textarea id="message" v-model="message" rows="3" placeholder="Descreva sua situação..."></textarea>
                 </div>
                 <div class="input-group" role="group" aria-labelledby="send-to-label">
                     <label id="send-to-label">Mandar para:</label>
-                    <div class="checkbox-group" v-for="recipient in recipients" :key="recipient.value">
-                        <input type="checkbox" :id="recipient.value" :value="recipient.value" v-model="checked">
+                    <div v-for="recipient in recipients" :key="recipient.value" class="checkbox-group">
+                        <input :id="recipient.value" v-model="checked" type="checkbox" :value="recipient.value">
                         <label :for="recipient.value">{{ recipient.label }}</label>
                     </div>
                 </div>

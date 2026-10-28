@@ -8,12 +8,12 @@
       <form @submit.prevent="login">
         <div class="input-group">
           <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Digite seu email" v-model="email" @blur="validateField('email')">
+          <input id="email" v-model="email" type="email" placeholder="Digite seu email" @blur="validateField('email')">
           <FieldNotifications field="email"/>
         </div>
         <div class="input-group">
           <label for="password">Senha</label>
-          <input type="password" id="password" placeholder="Digite sua senha" v-model="password" @blur="validateField('password')">
+          <input id="password" v-model="password" type="password" placeholder="Digite sua senha" @blur="validateField('password')">
           <FieldNotifications field="password"/>
         </div>
         <router-link to="/forgot-password" class="link forgot">Esqueceu a senha?</router-link>

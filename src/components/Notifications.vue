@@ -14,9 +14,9 @@
 </template>
   
 <script setup>
-const props = defineProps({
-  	errors: Array,
-  	successes: Array,
+defineProps({
+  	errors: { type: Array, default: () => [] },
+  	successes: { type: Array, default: () => [] },
 });
 </script>
 

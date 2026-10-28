@@ -7,7 +7,7 @@
     <div class="form-wrapper">
       <!-- Same message whether or not the email has an account: the page
            shouldn't reveal who is registered -->
-      <div class="sent" v-if="sent" role="status">
+      <div v-if="sent" class="sent" role="status">
         <p>Se <strong>{{ sentTo }}</strong> tiver uma conta, você vai receber um email com um link para criar uma nova senha.</p>
         <p>Não chegou? Confira o spam ou tente de novo em alguns minutos.</p>
         <div class="btn-flex">
@@ -18,7 +18,7 @@
         <p class="hint">Digite o email da sua conta e enviaremos um link para você criar uma nova senha.</p>
         <div class="input-group">
           <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Digite seu email" v-model="email" @blur="validateEmail()">
+          <input id="email" v-model="email" type="email" placeholder="Digite seu email" @blur="validateEmail()">
           <FieldNotifications field="email"/>
         </div>
         <div class="btn-flex">

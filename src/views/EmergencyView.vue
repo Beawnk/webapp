@@ -2,7 +2,7 @@
   <section class="emergency-view">
     <div class="gradient"></div>
     <div class="header">
-        <Menu />
+        <AppMenu />
         <h2>Emergência</h2>
     </div>
     <div class="content">

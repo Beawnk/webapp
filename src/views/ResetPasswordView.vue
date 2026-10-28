@@ -7,7 +7,7 @@
     <div class="form-wrapper">
       <!-- The email link signs the user in. Without a session the link was
            invalid, already used or expired -->
-      <div class="invalid" v-if="!userStore.logged" role="status">
+      <div v-if="!userStore.logged" class="invalid" role="status">
         <p>Este link é inválido ou expirou. Peça um novo para redefinir sua senha.</p>
         <div class="btn-flex">
           <router-link to="/forgot-password" class="btn primary">Pedir novo link</router-link>
@@ -16,12 +16,12 @@
       <form v-else @submit.prevent="savePassword">
         <div class="input-group">
           <label for="password">Nova senha</label>
-          <input type="password" id="password" placeholder="Digite a nova senha" autocomplete="new-password" v-model="password" @blur="validatePassword()">
+          <input id="password" v-model="password" type="password" placeholder="Digite a nova senha" autocomplete="new-password" @blur="validatePassword()">
           <FieldNotifications field="password"/>
         </div>
         <div class="input-group">
           <label for="password-confirm">Confirme a nova senha</label>
-          <input type="password" id="password-confirm" placeholder="Digite a nova senha de novo" autocomplete="new-password" v-model="passwordConfirm" @blur="validatePasswordConfirm()">
+          <input id="password-confirm" v-model="passwordConfirm" type="password" placeholder="Digite a nova senha de novo" autocomplete="new-password" @blur="validatePasswordConfirm()">
           <FieldNotifications field="passwordConfirm"/>
         </div>
         <div class="btn-flex">
